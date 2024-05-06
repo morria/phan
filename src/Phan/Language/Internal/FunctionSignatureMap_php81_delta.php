@@ -13,6 +13,10 @@ return [
   ],
 
   'changed' => [
+    'fputcsv' => [
+      'old' => ['int|false', 'stream'=>'resource','fields'=>'array','separator='=>'string','enclosure='=>'string','escape='=>'string'],
+      'new' => ['int|false', 'stream'=>'resource','fields'=>'array','separator='=>'string','enclosure='=>'string','escape='=>'string','eol'=>'string'],
+    ],
     'ini_set' => [
       'old' => ['string|false', 'option'=>'string', 'value'=>'string'],
       'new' => ['string|false', 'option'=>'string', 'value'=>'string|int|float|bool|null'],
