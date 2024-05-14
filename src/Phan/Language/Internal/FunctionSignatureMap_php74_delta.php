@@ -64,12 +64,12 @@ return [
       'new' => ['bool', 'hash'=>'string', 'algo'=>'?string|?int', 'options='=>'array'],
     ],
     'preg_replace_callback' => [
-      'old' => ['string|string[]', 'pattern'=>'string|array', 'callback'=>'callable(array):string', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
-      'new' => ['string|string[]', 'pattern'=>'string|array', 'callback'=>'callable(array):string', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int', 'flags='=>'int'],
+      'old' => ['string|string[]|null', 'pattern'=>'string|array', 'callback'=>'callable(array):string', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
+      'new' => ['string|string[]|null', 'pattern'=>'string|array', 'callback'=>'callable(array):string', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int', 'flags='=>'int'],
     ],
     'preg_replace_callback_array' => [
-      'old' => ['string|string[]', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
-      'new' => ['string|string[]', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int', 'flags='=>'int'],
+      'old' => ['string|string[]|null', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
+      'new' => ['string|string[]|null', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int', 'flags='=>'int'],
     ],
     'proc_open' => [
       'old' => ['resource|false', 'command'=>'string', 'descriptor_spec'=>'array', '&w_pipes'=>'resource[]', 'cwd='=>'?string', 'env_vars='=>'?array', 'options='=>'array'],
