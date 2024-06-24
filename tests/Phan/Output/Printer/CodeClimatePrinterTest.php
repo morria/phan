@@ -25,6 +25,7 @@ final class CodeClimatePrinterTest extends BaseTest
         $printer->print(new IssueInstance(Issue::fromType(Issue::UndeclaredVariableDim), 'dim.php', 10, ['varName']));
         $printer->print(new IssueInstance(Issue::fromType(Issue::SyntaxError), 'test.php', 1, ['fake error']));
         $printer->print(new IssueInstance(Issue::fromType(Issue::UndeclaredMethod), 'undefinedmethod.php', 1, ['\\Foo::bar']));
+        $printer->print(new IssueInstance(Issue::fromType(Issue::SyntaxError), 'bad.php', 2, ['fake invalid token error'], null, 3));
         $printer->flush();
 
         $expected_output = '';
@@ -32,6 +33,7 @@ final class CodeClimatePrinterTest extends BaseTest
         $expected_output .= '{"type":"issue","check_name":"PhanUndeclaredVariableDim","description":"Variable $varName was undeclared, but array fields are being added to it.","categories":["Bug Risk"],"severity":"info","location":{"path":"dim.php","lines":{"begin":10,"end":10}}}' . "\x00";
         $expected_output .= '{"type":"issue","check_name":"PhanSyntaxError","description":"fake error","categories":["Bug Risk"],"severity":"critical","location":{"path":"test.php","lines":{"begin":1,"end":1}}}' . "\x00";
         $expected_output .= '{"type":"issue","check_name":"PhanUndeclaredMethod","description":"Call to undeclared method \\\\Foo::bar","categories":["Bug Risk"],"severity":"critical","location":{"path":"undefinedmethod.php","lines":{"begin":1,"end":1}}}' . "\x00";
+        $expected_output .= '{"type":"issue","check_name":"PhanSyntaxError","description":"fake invalid token error","categories":["Bug Risk"],"severity":"critical","location":{"path":"bad.php","lines":{"begin":2,"end":2,"column":3}}}' . "\x00";
         // phpcs:enable
         $this->assertSame($expected_output, $output->fetch());
     }
