@@ -646,13 +646,19 @@ class ContextNode
         bool $is_direct = false,
         bool $is_new_expression = false
     ): Method {
-        return $this->getMethodSetInternal(
+        $ret = $this->getMethodSetInternal(
             $method_name,
             $is_static,
             $is_direct,
             $is_new_expression,
-            true
-        )->current();
+            first_match: true
+        );
+
+        if ($ret->current() === null) {
+            var_dump($ret);
+        }
+
+        return $ret->current()
     }
 
     public function getMethodSet(
