@@ -651,7 +651,7 @@ class ContextNode
             $is_static,
             $is_direct,
             $is_new_expression,
-            first_match: true
+            true
         )->current();
     }
 
@@ -666,7 +666,7 @@ class ContextNode
             $is_static,
             $is_direct,
             $is_new_expression,
-            first_match: false
+            false
         );
     }
 
