@@ -50,6 +50,7 @@ use Phan\Language\Type\StringType;
 use Phan\Language\UnionType;
 use Phan\Library\FileCache;
 use Phan\Library\None;
+use Phan\Library\Set;
 
 use function implode;
 use function is_object;
@@ -639,6 +640,36 @@ class ContextNode
         return $class_list;
     }
 
+    public function getMethod(
+        $method_name,
+        bool $is_static,
+        bool $is_direct = false,
+        bool $is_new_expression = false,
+    ): Method {
+        return $this->getMethodSetInternal(
+            $method_name,
+            $is_static,
+            $is_direct,
+            $is_new_expression,
+            first_match: true
+        )->current();
+    }
+
+    public function getMethodSet(
+        $method_name,
+        bool $is_static,
+        bool $is_direct = false,
+        bool $is_new_expression = false,
+    ): Set {
+        return $this->getMethodSetInternal(
+            $method_name,
+            $is_static,
+            $is_direct,
+            $is_new_expression,
+            first_match: false
+        );
+    }
+
     /**
      * @param Node|string $method_name
      * Either then name of the method or a node that
@@ -653,7 +684,7 @@ class ContextNode
      * @param bool $is_new_expression
      * Set to true if this is (new (expr)())
      *
-     * @return Method
+     * @return Set<Method>
      * A method with the given name on the class referenced
      * from the given node
      *
@@ -666,12 +697,13 @@ class ContextNode
      *
      * @throws IssueException
      */
-    public function getMethod(
+    private function getMethodSetInternal(
         $method_name,
         bool $is_static,
-        bool $is_direct = false,
-        bool $is_new_expression = false
-    ): Method {
+        bool $is_direct,
+        bool $is_new_expression,
+        bool $first_match
+    ): Set {
 
         if ($method_name instanceof Node) {
             $method_name_type = UnionTypeVisitor::unionTypeFromNode(
@@ -679,19 +711,30 @@ class ContextNode
                 $this->context,
                 $method_name
             );
+            $method_set = new Set;
             foreach ($method_name_type->getTypeSet() as $type) {
                 if ($type instanceof LiteralStringType) {
                     // TODO: Warn about nullable?
-                    return $this->getMethod($type->getValue(), $is_static, $is_direct, $is_new_expression);
+                    $this_method_set = $this->getMethodSetInternal($type->getValue(), $is_static, $is_direct, $is_new_expression, $first_match);
+                    if ($first_match) {
+                        return $this_method_set;
+                    } else {
+                        $method_set = $method_set->union($this_method_set);
+                    }
                 }
             }
-            // The method_name turned out to be a variable.
-            // There isn't much we can do to figure out what
-            // it's referring to.
-            throw new NodeException(
-                $method_name,
-                "Unexpected method node"
-            );
+
+            if ($method_set->count() === 0) {
+                // The method_name turned out to be a variable.
+                // There isn't much we can do to figure out what
+                // it's referring to.
+                throw new NodeException(
+                    $method_name,
+                    "Unexpected method node"
+                );
+            } else {
+                return $method_set;
+            }
         }
 
         if (!\is_string($method_name)) {
@@ -780,14 +823,15 @@ class ContextNode
             );
         }
         $class_without_method = null;
-        $method = null;
-        $call_method = null;
+        $method_set = new Set;
+        $call_method_set = new Set;
+        $last_call_method = null;
 
         // Hunt to see if any of them have the method we're
         // looking for
         foreach ($class_list as $class) {
             if ($class->hasMethodWithName($this->code_base, $method_name, $is_direct)) {
-                if ($method) {
+                if ($first_match && $method_set->count() > 0) {
                     // TODO: Could favor the most generic subclass in a union type
                     continue;
                 }
@@ -801,19 +845,31 @@ class ContextNode
                     } catch (RecursionDepthException $_) {
                     }
                 }
+                $method_set->attach($method);
             } elseif (!$is_static && $class->allowsCallingUndeclaredInstanceMethod($this->code_base)) {
-                $call_method = $class->getCallMethod($this->code_base);
+                $last_call_method = $class->getCallMethod($this->code_base);
+                $call_method_set->attach($last_call_method);
             } elseif ($is_static && $class->allowsCallingUndeclaredStaticMethod($this->code_base)) {
-                $call_method = $class->getCallStaticMethod($this->code_base);
+                $last_call_method = $class->getCallStaticMethod($this->code_base);
+                $call_method_set->attach($last_call_method);
             } else {
                 $class_without_method = $class->getFQSEN();
             }
         }
-        if (!$method || ($is_direct && $method->isFakeConstructor())) {
-            $method = $call_method;
+        if (
+            ($method_set->count() === 0 || ($is_direct && $method_set->current()->isFakeConstructor() && $first_match)) &&
+            $last_call_method
+        ) {
+            $method_set = new Set;
+            $method_set->attach($last_call_method);
+        } else {
+            $method_set = $method_set->union($call_method_set);
         }
-        if ($method) {
-            if ($class_without_method && Config::get_strict_method_checking() && !$this->isDefinitelyPossiblyUndeclaredMethod($node, $method_name, $is_direct)) {
+        if ($method_set->count() > 0) {
+            if (
+                $class_without_method && Config::get_strict_method_checking() &&
+                !$this->isDefinitelyPossiblyUndeclaredMethod($node, $method_name, $is_direct)
+            ) {
                 $this->emitIssue(
                     Issue::PossiblyUndeclaredMethod,
                     $node->lineno,
@@ -824,7 +880,7 @@ class ContextNode
                     $class_without_method
                 );
             }
-            return $method;
+            return $method_set;
         }
 
         $first_class = $class_list[0];
