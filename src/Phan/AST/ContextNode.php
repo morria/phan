@@ -659,7 +659,7 @@ class ContextNode
         $method_name,
         bool $is_static,
         bool $is_direct = false,
-        bool $is_new_expression = false,
+        bool $is_new_expression = false
     ): Set {
         return $this->getMethodSetInternal(
             $method_name,
