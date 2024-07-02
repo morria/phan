@@ -50,7 +50,6 @@ use Phan\Language\Type\StringType;
 use Phan\Language\UnionType;
 use Phan\Library\FileCache;
 use Phan\Library\None;
-use Phan\Library\Set;
 
 use function implode;
 use function is_object;
@@ -646,28 +645,22 @@ class ContextNode
         bool $is_direct = false,
         bool $is_new_expression = false
     ): Method {
-        $ret = $this->getMethodSetInternal(
+        return $this->getMethodListInternal(
             $method_name,
             $is_static,
             $is_direct,
             $is_new_expression,
             true
-        );
-
-        if ($ret->current() === null) {
-            var_dump($ret);
-        }
-
-        return $ret->current();
+        )[0];
     }
 
-    public function getMethodSet(
+    public function getMethodList(
         $method_name,
         bool $is_static,
         bool $is_direct = false,
         bool $is_new_expression = false
-    ): Set {
-        return $this->getMethodSetInternal(
+    ): array {
+        return $this->getMethodListInternal(
             $method_name,
             $is_static,
             $is_direct,
@@ -690,7 +683,7 @@ class ContextNode
      * @param bool $is_new_expression
      * Set to true if this is (new (expr)())
      *
-     * @return Set<Method>
+     * @return list<Method>
      * A method with the given name on the class referenced
      * from the given node
      *
@@ -703,13 +696,13 @@ class ContextNode
      *
      * @throws IssueException
      */
-    private function getMethodSetInternal(
+    private function getMethodListInternal(
         $method_name,
         bool $is_static,
         bool $is_direct,
         bool $is_new_expression,
         bool $first_match
-    ): Set {
+    ): array {
 
         if ($method_name instanceof Node) {
             $method_name_type = UnionTypeVisitor::unionTypeFromNode(
@@ -717,20 +710,26 @@ class ContextNode
                 $this->context,
                 $method_name
             );
-            $method_set = new Set;
+            $methods = [];
             foreach ($method_name_type->getTypeSet() as $type) {
                 if ($type instanceof LiteralStringType) {
                     // TODO: Warn about nullable?
-                    $this_method_set = $this->getMethodSetInternal($type->getValue(), $is_static, $is_direct, $is_new_expression, $first_match);
+                    $these_methods = $this->getMethodListInternal(
+                        $type->getValue(),
+                        $is_static,
+                        $is_direct,
+                        $is_new_expression,
+                        $first_match
+                    );
                     if ($first_match) {
-                        return $this_method_set;
+                        return $these_methods;
                     } else {
-                        $method_set = $method_set->union($this_method_set);
+                        $methods = array_merge($methods, $these_methods);
                     }
                 }
             }
 
-            if ($method_set->count() === 0) {
+            if (!$methods) {
                 // The method_name turned out to be a variable.
                 // There isn't much we can do to figure out what
                 // it's referring to.
@@ -739,7 +738,7 @@ class ContextNode
                     "Unexpected method node"
                 );
             } else {
-                return $method_set;
+                return $methods;
             }
         }
 
@@ -829,15 +828,15 @@ class ContextNode
             );
         }
         $class_without_method = null;
-        $method_set = new Set;
-        $call_method_set = new Set;
+        $methods = [];
+        $call_methods = [];
         $last_call_method = null;
 
         // Hunt to see if any of them have the method we're
         // looking for
         foreach ($class_list as $class) {
             if ($class->hasMethodWithName($this->code_base, $method_name, $is_direct)) {
-                if ($first_match && $method_set->count() > 0) {
+                if ($first_match && $methods) {
                     // TODO: Could favor the most generic subclass in a union type
                     continue;
                 }
@@ -851,27 +850,26 @@ class ContextNode
                     } catch (RecursionDepthException $_) {
                     }
                 }
-                $method_set->attach($method);
+                $methods[] = $method;
             } elseif (!$is_static && $class->allowsCallingUndeclaredInstanceMethod($this->code_base)) {
                 $last_call_method = $class->getCallMethod($this->code_base);
-                $call_method_set->attach($last_call_method);
+                $call_methods[] = $last_call_method;
             } elseif ($is_static && $class->allowsCallingUndeclaredStaticMethod($this->code_base)) {
                 $last_call_method = $class->getCallStaticMethod($this->code_base);
-                $call_method_set->attach($last_call_method);
+                $call_methods[] = $last_call_method;
             } else {
                 $class_without_method = $class->getFQSEN();
             }
         }
         if (
-            ($method_set->count() === 0 || ($is_direct && $method_set->current()->isFakeConstructor() && $first_match)) &&
+            (!$methods || ($is_direct && $methods[0]->isFakeConstructor() && $first_match)) &&
             $last_call_method
         ) {
-            $method_set = new Set;
-            $method_set->attach($last_call_method);
+            $methods[] = $last_call_method;
         } else {
-            $method_set = $method_set->union($call_method_set);
+            $method = array_merge($methods, $call_methods);
         }
-        if ($method_set->count() > 0) {
+        if ($methods) {
             if (
                 $class_without_method && Config::get_strict_method_checking() &&
                 !$this->isDefinitelyPossiblyUndeclaredMethod($node, $method_name, $is_direct)
@@ -886,7 +884,7 @@ class ContextNode
                     $class_without_method
                 );
             }
-            return $method_set;
+            return $methods;
         }
 
         $first_class = $class_list[0];
