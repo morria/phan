@@ -639,6 +639,35 @@ class ContextNode
         return $class_list;
     }
 
+    /**
+     * Returns only the first method found that could possibly correspond to this callsite.
+     *
+     * @param Node|string $method_name
+     * Either then name of the method or a node that
+     * produces the name of the method.
+     *
+     * @param bool $is_static
+     * Set to true if this is a static method call
+     *
+     * @param bool $is_direct @phan-mandatory-param
+     * Set to true if this is directly invoking the method (guaranteed not to be special syntax)
+     *
+     * @param bool $is_new_expression
+     * Set to true if this is (new (expr)())
+     *
+     * @return list<Method>
+     * A method with the given name on the class referenced
+     * from the given node
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * method
+     *
+     * @throws IssueException
+     */
     public function getMethod(
         $method_name,
         bool $is_static,
@@ -654,6 +683,35 @@ class ContextNode
         )[0];
     }
 
+    /**
+     * Returns the full list of methods that could possibly correspond to this callsite.
+     *
+     * @param Node|string $method_name
+     * Either then name of the method or a node that
+     * produces the name of the method.
+     *
+     * @param bool $is_static
+     * Set to true if this is a static method call
+     *
+     * @param bool $is_direct @phan-mandatory-param
+     * Set to true if this is directly invoking the method (guaranteed not to be special syntax)
+     *
+     * @param bool $is_new_expression
+     * Set to true if this is (new (expr)())
+     *
+     * @return list<Method>
+     * A method with the given name on the class referenced
+     * from the given node
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * method
+     *
+     * @throws IssueException
+     */
     public function getMethodList(
         $method_name,
         bool $is_static,
@@ -682,6 +740,9 @@ class ContextNode
      *
      * @param bool $is_new_expression
      * Set to true if this is (new (expr)())
+     *
+     * @param bool $first_match
+     * Set to true to short circuit and return only the first method found.
      *
      * @return list<Method>
      * A method with the given name on the class referenced
