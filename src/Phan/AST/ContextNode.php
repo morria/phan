@@ -655,7 +655,7 @@ class ContextNode
      * @param bool $is_new_expression
      * Set to true if this is (new (expr)())
      *
-     * @return list<Method>
+     * @return Method
      * A method with the given name on the class referenced
      * from the given node
      *
@@ -700,7 +700,7 @@ class ContextNode
      * Set to true if this is (new (expr)())
      *
      * @return list<Method>
-     * A method with the given name on the class referenced
+     * A list of methods with the given name on the classes referenced
      * from the given node
      *
      * @throws NodeException
@@ -712,7 +712,7 @@ class ContextNode
      *
      * @throws IssueException
      */
-    public function getMethodList(
+    public function getMethodList( // @phan-current-line PhanUnreferencedPublicMethod
         $method_name,
         bool $is_static,
         bool $is_direct = false,
@@ -745,7 +745,7 @@ class ContextNode
      * Set to true to short circuit and return only the first method found.
      *
      * @return list<Method>
-     * A method with the given name on the class referenced
+     * A list of methods with the given name on the classes referenced
      * from the given node
      *
      * @throws NodeException
@@ -928,7 +928,7 @@ class ContextNode
         ) {
             $methods[] = $last_call_method;
         } else {
-            $method = array_merge($methods, $call_methods);
+            $methods = array_merge($methods, $call_methods);
         }
         if ($methods) {
             if (
