@@ -651,14 +651,14 @@ class ContextNode
             $is_static,
             $is_direct,
             $is_new_expression,
-            first_match: true
+            true
         );
 
         if ($ret->current() === null) {
             var_dump($ret);
         }
 
-        return $ret->current()
+        return $ret->current();
     }
 
     public function getMethodSet(
