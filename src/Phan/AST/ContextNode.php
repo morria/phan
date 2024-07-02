@@ -712,7 +712,7 @@ class ContextNode
      *
      * @throws IssueException
      */
-    public function getMethodList( // @phan-current-line PhanUnreferencedPublicMethod
+    public function getMethodList( // @phan-suppress-current-line PhanUnreferencedPublicMethod
         $method_name,
         bool $is_static,
         bool $is_direct = false,
