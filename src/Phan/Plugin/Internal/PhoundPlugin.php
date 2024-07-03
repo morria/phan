@@ -77,7 +77,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
             throw new Exception();
         }
 
-        if (!self::$db->exec('CREATE INDEX element_type_and_callsite ON callsites (element, type, callsite)')) {
+        if (!self::$db->exec('CREATE UNIQUE INDEX element_type_and_callsite ON callsites (element, type, callsite)')) {
             throw new Exception();
         }
 
@@ -99,7 +99,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      * @throws Exception
      */
     private static function createBulkInsertPreparedStatement(int $bulk_insert_size): SQLite3Stmt {
-        $bulk_insert_sql = "INSERT INTO callsites ('element', 'type', 'callsite') VALUES ";
+        $bulk_insert_sql = "INSERT OR IGNORE INTO callsites ('element', 'type', 'callsite') VALUES ";
         $bulk_insert_sql .= str_repeat("(?, ?, ?), ", $bulk_insert_size);
         $bulk_insert_sql = rtrim($bulk_insert_sql, ', ');
         $stmt = self::$db->prepare($bulk_insert_sql);
@@ -115,15 +115,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     public function visitMethodCall(Node $node)
     {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethod($node->children['method'], false, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList($node->children['method'], false, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'method');
+        $this->genericVisitClassElement($elements, 'method');
     }
 
     /**
@@ -140,7 +140,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'method');
+        $this->genericVisitClassElement([$element], 'method');
     }
 
     /**
@@ -157,7 +157,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'const');
+        $this->genericVisitClassElement([$element], 'const');
     }
 
     /**
@@ -174,7 +174,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'prop');
+        $this->genericVisitClassElement([$element], 'prop');
     }
 
     /**
@@ -191,7 +191,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'prop');
+        $this->genericVisitClassElement([$element], 'prop');
     }
 
     /**
@@ -203,18 +203,20 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     }
 
     /**
-     * Helper function to add a class element to the DB
-     * @param  ClassElement $element
+     * Helper function to add class elements to the DB
+     * @param  list<ClassElement> $elements
      * @param  string       $type
      * @throws Exception
      */
-    public function genericVisitClassElement(ClassElement $element, string $type): void {
-        $element_name = $element->getFQSEN()->__toString();
-        $callsite = $this->context->__toString();
-        self::$callsites[] = [$element_name, $type, $callsite];
+    public function genericVisitClassElement(array $elements, string $type): void {
+        foreach ($elements as $element) {
+            $element_name = $element->getFQSEN()->__toString();
+            $callsite = $this->context->__toString();
+            self::$callsites[] = [$element_name, $type, $callsite];
 
-        if (count(self::$callsites) >= self::BULK_INSERT_SIZE) {
-            self::doBulkWrite(self::$prepared_insert);
+            if (count(self::$callsites) >= self::BULK_INSERT_SIZE) {
+                self::doBulkWrite(self::$prepared_insert);
+            }
         }
     }
 
@@ -356,7 +358,7 @@ final class PhoundPlugin extends PluginV3 implements PostAnalyzeNodeCapability, 
                     if ($phound_visitor === null) {
                         $phound_visitor = new PhoundVisitor($code_base, $context);
                     }
-                    $phound_visitor->genericVisitClassElement($function, 'method');
+                    $phound_visitor->genericVisitClassElement([$function], 'method');
                 }
             }
         };
