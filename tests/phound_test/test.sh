@@ -35,14 +35,16 @@ EXPECTED=$(cat <<-EOF
 \A::fooz|prop|src/001_phound_callsites.php:12
 \A::foo|method|src/001_phound_callsites.php:13
 \A::bar|method|src/001_phound_callsites.php:14
-\A::foo|method|src/001_phound_callsites.php:21
-\A::bar|method|src/001_phound_callsites.php:22
-\A::foo|method|src/001_phound_callsites.php:24
-\A::bar|method|src/001_phound_callsites.php:25
-\A::baz|method|src/001_phound_callsites.php:26
-\A::bar|method|src/001_phound_callsites.php:31
-\A::foo|method|src/001_phound_callsites.php:34
-\Closure::fromCallable|method|src/001_phound_callsites.php:34
+\B::foo|method|src/001_phound_callsites.php:24
+\C::foo|method|src/001_phound_callsites.php:24
+\A::foo|method|src/001_phound_callsites.php:39
+\A::bar|method|src/001_phound_callsites.php:40
+\A::foo|method|src/001_phound_callsites.php:42
+\A::bar|method|src/001_phound_callsites.php:43
+\A::baz|method|src/001_phound_callsites.php:44
+\A::bar|method|src/001_phound_callsites.php:49
+\A::foo|method|src/001_phound_callsites.php:52
+\Closure::fromCallable|method|src/001_phound_callsites.php:52
 EOF
 )
 
