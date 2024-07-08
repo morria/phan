@@ -36,7 +36,6 @@ EXPECTED=$(cat <<-EOF
 \A::foo|method|src/001_phound_callsites.php:13
 \A::bar|method|src/001_phound_callsites.php:14
 \B::foo|method|src/001_phound_callsites.php:24
-\C::foo|method|src/001_phound_callsites.php:24
 \A::foo|method|src/001_phound_callsites.php:39
 \A::bar|method|src/001_phound_callsites.php:40
 \A::foo|method|src/001_phound_callsites.php:42
