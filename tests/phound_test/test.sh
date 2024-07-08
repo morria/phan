@@ -23,7 +23,7 @@ echo "Running phan in '$PWD' ..."
 rm -rf ~/phound.db
 
 # We use the polyfill parser because it behaves consistently in all php versions.
-if ! ../../phan --force-polyfill-parser --memory-limit 1G ; then
+if ! ../../phan --force-polyfill-parser --memory-limit 1G --analyze-twice ; then
     echo "Phan found some errors - this is unexpected"
     exit 1
 fi

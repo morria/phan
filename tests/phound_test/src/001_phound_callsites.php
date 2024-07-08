@@ -13,6 +13,24 @@ class A {
         echo 'instance method: ' . $this->foo() . "\n"; // AST_METHOD_CALL
         echo 'static method: ' . self::bar() . "\n"; // AST_STATIC_CALL
     }
+
+    function callBOrC() {
+        $b_or_c = null;
+        if (random_int(0, 10) < 5) {
+            $b_or_c = new B;
+        } else {
+            $b_or_c = new C;
+        }
+        $b_or_c->foo();
+    }
+}
+
+class B {
+    function foo() {}
+}
+
+class C {
+    function foo() {}
 }
 
 function yo() { echo "yo\n"; }
