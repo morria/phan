@@ -183,7 +183,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitProp(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
@@ -191,7 +191,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement([$element], 'prop');
+        $this->genericVisitClassElement($element, 'prop');
     }
 
     /**
