@@ -35,16 +35,17 @@ EXPECTED=$(cat <<-EOF
 \A::fooz|prop|src/001_phound_callsites.php:12
 \A::foo|method|src/001_phound_callsites.php:13
 \A::bar|method|src/001_phound_callsites.php:14
-\B::foo|method|src/001_phound_callsites.php:24
-\C::foo|method|src/001_phound_callsites.php:24
-\A::foo|method|src/001_phound_callsites.php:39
-\A::bar|method|src/001_phound_callsites.php:40
-\A::foo|method|src/001_phound_callsites.php:42
-\A::bar|method|src/001_phound_callsites.php:43
-\A::baz|method|src/001_phound_callsites.php:44
-\A::bar|method|src/001_phound_callsites.php:49
-\A::foo|method|src/001_phound_callsites.php:52
-\Closure::fromCallable|method|src/001_phound_callsites.php:52
+\A::getBOrC|method|src/001_phound_callsites.php:26
+\B::foo|method|src/001_phound_callsites.php:27
+\C::foo|method|src/001_phound_callsites.php:27
+\B::bar|prop|src/001_phound_callsites.php:28
+\A::foo|method|src/001_phound_callsites.php:45
+\A::bar|method|src/001_phound_callsites.php:46
+\A::foo|method|src/001_phound_callsites.php:48
+\A::baz|method|src/001_phound_callsites.php:50
+\A::bar|method|src/001_phound_callsites.php:55
+\A::foo|method|src/001_phound_callsites.php:58
+\Closure::fromCallable|method|src/001_phound_callsites.php:58
 EOF
 )
 
