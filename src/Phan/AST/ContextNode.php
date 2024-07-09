@@ -1736,7 +1736,7 @@ class ContextNode
                 }
             }
             if ($properties) {
-                return $properties
+                return $properties;
             }
         }
 
