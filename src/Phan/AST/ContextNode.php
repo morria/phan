@@ -1470,12 +1470,13 @@ class ContextNode
     }
 
     /**
+     * Returns only the first property found that could possibly correspond to this callsite.
+     *
      * @param bool $is_static
      * True if we're looking for a static property,
      * false if we're looking for an instance property.
      *
      * @return Property
-     * Phan's representation of a property declaration.
      *
      * @throws NodeException
      * An exception is thrown if we can't understand the node
@@ -1494,6 +1495,70 @@ class ContextNode
         bool $is_static,
         bool $is_known_assignment = false
     ): Property {
+        return $this->getPropertyListInternal($is_static, $is_known_assignment, true)[0];
+    }
+
+    /**
+     * Returns the full list of properties that could possibly correspond to this callsite.
+     *
+     * @param bool $is_static
+     * True if we're looking for a static property,
+     * false if we're looking for an instance property.
+     *
+     * @return list<Property>
+     * A list of properties with the given name on the classes referenced
+     * from the given node.
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws IssueException
+     * An exception is thrown if we can't find the given
+     * class or if we don't have access to the property (its
+     * private or protected)
+     * or if the property is static and missing.
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     */
+    public function getPropertyList(
+        bool $is_static,
+        bool $is_known_assignment = false
+    ): array {
+        return $this->getPropertyListInternal($is_static, $is_known_assignment, false);
+    }
+
+    /**
+     * @param bool $is_static
+     * True if we're looking for a static property,
+     * false if we're looking for an instance property.
+     *
+     * @param bool $first_match
+     * Set to true to short circuit and return only the first method found.
+     *
+     * @return list<Property>
+     * A list of properties with the given name on the classes referenced
+     * from the given node.
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws IssueException
+     * An exception is thrown if we can't find the given
+     * class or if we don't have access to the property (its
+     * private or protected)
+     * or if the property is static and missing.
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     */
+    private function getPropertyListInternal(
+        bool $is_static,
+        bool $is_known_assignment = false,
+        bool $first_match
+    ): array {
         $node = $this->node;
 
         if (!($node instanceof Node)) {
@@ -1559,6 +1624,7 @@ class ContextNode
 
         $class_without_property = null;
         $property = null;
+        $properties = [];
         foreach ($class_list as $class) {
             $class_fqsen = $class->getFQSEN();
 
@@ -1584,7 +1650,7 @@ class ContextNode
                 $class_without_property = $class;
                 continue;
             }
-            if ($property) {
+            if ($properties && $first_match) {
                 continue;
             }
 
@@ -1596,6 +1662,7 @@ class ContextNode
                 $node,
                 $is_known_assignment
             );
+            $properties[] = $property;
 
             if ($property->isDeprecated()) {
                 $this->emitIssue(
@@ -1629,7 +1696,7 @@ class ContextNode
                 !($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF)) {
             self::checkPossiblyUndeclaredInstanceProperty($this->code_base, $this->context, $node, $property_name);
         }
-        if ($property) {
+        if ($properties) {
             if ($class_without_property && Config::get_strict_object_checking() &&
                     !($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF)) {
                 $this->emitIssue(
@@ -1644,7 +1711,7 @@ class ContextNode
                     $class_without_property->getFQSEN()
                 );
             }
-            return $property;
+            return $properties;
         }
 
         // Since we didn't find the property on any of the
@@ -1655,7 +1722,7 @@ class ContextNode
                 if (Config::getValue('allow_missing_properties')
                     || $class->hasDynamicProperties($this->code_base)
                 ) {
-                    return $class->getPropertyByNameInContext(
+                    $properties[] = $class->getPropertyByNameInContext(
                         $this->code_base,
                         $property_name,
                         $this->context,
@@ -1663,31 +1730,15 @@ class ContextNode
                         $node,
                         $is_known_assignment
                     );
+                    if ($first_match) {
+                        break;
+                    }
                 }
             }
-        }
-
-        /*
-        $std_class_fqsen =
-            FullyQualifiedClassName::getStdClassFQSEN();
-
-        // If missing properties are cool, create it on
-        // the first class we found
-        if (!$is_static && ($class_fqsen && ($class_fqsen === $std_class_fqsen))
-            || Config::getValue('allow_missing_properties')
-        ) {
-            if (count($class_list) > 0) {
-                $class = $class_list[0];
-                return $class->getPropertyByNameInContext(
-                    $this->code_base,
-                    $property_name,
-                    $this->context,
-                    $is_static,
-                    $node
-                );
+            if ($properties) {
+                return $properties
             }
         }
-        */
 
         // If the class isn't found, we'll get the message elsewhere
         if ($class_fqsen) {
