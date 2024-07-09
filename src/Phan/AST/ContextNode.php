@@ -1521,8 +1521,6 @@ class ContextNode
      * @throws UnanalyzableException
      * An exception is thrown if we hit a construct in which
      * we can't determine if the property exists or not
-     *
-     * @suppress PhanUnreferencedPublicMethod not used yet.
      */
     public function getPropertyList(
         bool $is_static,

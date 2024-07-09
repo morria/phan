@@ -187,7 +187,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getProperty(false);
+            ))->getPropertyList(false);
         } catch (Exception $_) {
             return;
         }
