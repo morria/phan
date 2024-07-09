@@ -191,7 +191,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'prop');
+        $this->genericVisitClassElement($elements, 'prop');
     }
 
     /**
