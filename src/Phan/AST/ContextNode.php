@@ -1522,7 +1522,7 @@ class ContextNode
      * An exception is thrown if we hit a construct in which
      * we can't determine if the property exists or not
      */
-    public function getPropertyList( // @phan-current-next-line PhanUnreferencedPublicMethod
+    public function getPropertyList( // @phan-suppress-current-line PhanUnreferencedPublicMethod
         bool $is_static,
         bool $is_known_assignment = false
     ): array {
