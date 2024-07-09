@@ -14,22 +14,28 @@ class A {
         echo 'static method: ' . self::bar() . "\n"; // AST_STATIC_CALL
     }
 
-    function callBOrC() {
-        $b_or_c = null;
+    public function getBOrC() {
         if (random_int(0, 10) < 5) {
-            $b_or_c = new B;
+            return new B;
         } else {
-            $b_or_c = new C;
+            return new C;
         }
+    }
+
+    function callBOrC() {
+        $b_or_c = $this->getBOrC();
         $b_or_c->foo();
+        echo $b_or_c->bar;
     }
 }
 
 class B {
+    public $bar = 1;
     function foo() {}
 }
 
 class C {
+    public $bar = 1;
     function foo() {}
 }
 

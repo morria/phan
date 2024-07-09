@@ -1556,7 +1556,7 @@ class ContextNode
      */
     private function getPropertyListInternal(
         bool $is_static,
-        bool $is_known_assignment = false,
+        bool $is_known_assignment,
         bool $first_match
     ): array {
         $node = $this->node;
