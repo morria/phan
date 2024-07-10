@@ -2252,7 +2252,7 @@ class ContextNode
             }
 
             if ($first_match) {
-                return $constant;
+                return $constants;
             }
         }
 
