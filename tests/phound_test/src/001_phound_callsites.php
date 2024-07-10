@@ -38,10 +38,12 @@ class A {
         $class_name = $this->getBOrCClassName();
         $class_name::zoo();
         echo $class_name::$baz;
+        echo $class_name::BOO;
     }
 }
 
 class B {
+    const BOO = 0;
     public $bar = 1;
     public static $baz = 2;
     function foo() {}
@@ -49,6 +51,7 @@ class B {
 }
 
 class C {
+    const BOO = 0;
     public $bar = 1;
     public static $baz = 2;
     function foo() {}

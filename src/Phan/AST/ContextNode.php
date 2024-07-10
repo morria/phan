@@ -2085,8 +2085,11 @@ class ContextNode
     }
 
     /**
+     * Returns only the first class constant found that could
+     * possibly correspond to this callsite.
+     *
      * @return ClassConstant
-     * Get the class constant associated with this node
+     * Get the first class constant associated with this node
      * in this context
      *
      * @throws NodeException
@@ -2104,7 +2107,61 @@ class ContextNode
      * An exception is thrown if an issue is found while getting
      * the list of possible classes.
      */
-    public function getClassConst(): ClassConstant
+    public function getClassConst(): ClassConstant {
+        return $this->getClassConstListInternal(true)[0];
+    }
+
+    /**
+     * Returns the full list of class constants that could
+     * possibly correspond to this callsite.
+     *
+     * @return list<ClassConstant>
+     * Get the list of class constants associated with this node
+     * in this context
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * class
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     *
+     * @throws IssueException
+     * An exception is thrown if an issue is found while getting
+     * the list of possible classes.
+     */
+    public function getClassConstList(): array {
+        return $this->getClassConstListInternal(false);
+    }
+
+    /**
+     * @param bool $first_match
+     * Set to true to short circuit and return only the first method found.
+     *
+     * @return list<ClassConstant>
+     * Get the list of class constants associated with this node
+     * in this context
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * class
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     *
+     * @throws IssueException
+     * An exception is thrown if an issue is found while getting
+     * the list of possible classes.
+     */
+    public function getClassConstListInternal(bool $first_match): array
     {
         $node = $this->node;
         if (!($node instanceof Node)) {
@@ -2149,6 +2206,7 @@ class ContextNode
             );
         }
 
+        $constants = [];
         foreach ($class_list as $class) {
             // Remember the last analyzed class for the next issue message
             $class_fqsen = $class->getFQSEN();
@@ -2166,6 +2224,7 @@ class ContextNode
                 $constant_name,
                 $this->context
             );
+            $constants[] = $constant;
 
             if ($constant->isNSInternal($this->code_base)
                 && !$constant->isNSInternalAccessFromContext(
@@ -2192,7 +2251,13 @@ class ContextNode
                 );
             }
 
-            return $constant;
+            if ($first_match) {
+                return $constant;
+            }
+        }
+
+        if ($constants) {
+            return $constants;
         }
 
         // If no class is found, we'll emit the error elsewhere
