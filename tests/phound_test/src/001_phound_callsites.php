@@ -60,6 +60,15 @@ class C {
 
 function yo() { echo "yo\n"; }
 
+class TestConstructor {
+    function __construct() {}
+}
+class TestConstructor2 extends TestConstructor {
+    function __construct() {
+        parent::__construct();
+    }
+}
+
 $a = new A;
 $a->foo(); // AST_METHOD_CALL
 A::bar(); // AST_STATIC_CALL
