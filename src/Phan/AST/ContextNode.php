@@ -2133,8 +2133,6 @@ class ContextNode
      * @throws IssueException
      * An exception is thrown if an issue is found while getting
      * the list of possible classes.
-     *
-     * @suppress PhanUnreferencedPublicMethod
      */
     public function getClassConstList(): array {
         return $this->getClassConstListInternal(false);

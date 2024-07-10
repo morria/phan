@@ -123,7 +123,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($elements, 'method');
+        $this->genericVisitClassElements($elements, 'method');
     }
 
     /**
@@ -140,7 +140,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($elements, 'method');
+        $this->genericVisitClassElements($elements, 'method');
     }
 
     /**
@@ -149,15 +149,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitClassConst(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getClassConst();
+            ))->getClassConstList();
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement([$element], 'const');
+        $this->genericVisitClassElements($elements, 'const');
     }
 
     /**
@@ -174,7 +174,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($elements, 'prop');
+        $this->genericVisitClassElements($elements, 'prop');
     }
 
     /**
@@ -191,7 +191,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($elements, 'prop');
+        $this->genericVisitClassElements($elements, 'prop');
     }
 
     /**
@@ -208,7 +208,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      * @param  string       $type
      * @throws Exception
      */
-    public function genericVisitClassElement(array $elements, string $type): void {
+    public function genericVisitClassElements(array $elements, string $type): void {
         foreach ($elements as $element) {
             $element_name = $element->getFQSEN()->__toString();
             $callsite = $this->context->__toString();
@@ -352,14 +352,16 @@ final class PhoundPlugin extends PluginV3 implements PostAnalyzeNodeCapability, 
                 return;
             }
 
-            $phound_visitor = null;
+            $elements = [];
             foreach ($function_like_list as $function) {
                 if ($function instanceof ClassElement) {
-                    if ($phound_visitor === null) {
-                        $phound_visitor = new PhoundVisitor($code_base, $context);
-                    }
-                    $phound_visitor->genericVisitClassElement([$function], 'method');
+                    $elements[] = $function;
                 }
+            }
+
+            if ($elements) {
+                $phound_visitor = new PhoundVisitor($code_base, $context);
+                $phound_visitor->genericVisitClassElements($elements, 'method');
             }
         };
 

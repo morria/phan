@@ -65,6 +65,7 @@ $a->foo(); // AST_METHOD_CALL
 A::bar(); // AST_STATIC_CALL
 yo(); // AST_CALL
 call_user_func([$a, 'foo']); // AST_CALL
+call_user_func([$a->getBOrC(), 'foo']);
 call_user_func_array(A::class . '::bar', []); // AST_CALL
 $a->baz(); // AST_METHOD_CALL
 
