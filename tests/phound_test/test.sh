@@ -35,6 +35,8 @@ EXPECTED=$(cat <<-EOF
 \A::fooz|prop|src/001_phound_callsites.php:12
 \A::foo|method|src/001_phound_callsites.php:13
 \A::bar|method|src/001_phound_callsites.php:14
+\B::__construct|method|src/001_phound_callsites.php:19
+\C::__construct|method|src/001_phound_callsites.php:21
 \A::getBOrC|method|src/001_phound_callsites.php:34
 \B::foo|method|src/001_phound_callsites.php:35
 \C::foo|method|src/001_phound_callsites.php:35
@@ -48,6 +50,7 @@ EXPECTED=$(cat <<-EOF
 \B::BOO|const|src/001_phound_callsites.php:41
 \C::BOO|const|src/001_phound_callsites.php:41
 \TestConstructor::__construct|method|src/001_phound_callsites.php:68
+\A::__construct|method|src/001_phound_callsites.php:72
 \A::foo|method|src/001_phound_callsites.php:73
 \A::bar|method|src/001_phound_callsites.php:74
 \A::foo|method|src/001_phound_callsites.php:76
@@ -56,8 +59,11 @@ EXPECTED=$(cat <<-EOF
 \C::foo|method|src/001_phound_callsites.php:77
 \A::bar|method|src/001_phound_callsites.php:78
 \A::baz|method|src/001_phound_callsites.php:79
+\A::__construct|method|src/001_phound_callsites.php:83
 \A::bar|method|src/001_phound_callsites.php:83
 \A::getBOrCClassName|method|src/001_phound_callsites.php:85
+\B::__construct|method|src/001_phound_callsites.php:86
+\C::__construct|method|src/001_phound_callsites.php:86
 \B::foo|method|src/001_phound_callsites.php:86
 \C::foo|method|src/001_phound_callsites.php:86
 \A::foo|method|src/001_phound_callsites.php:88

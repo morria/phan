@@ -112,14 +112,12 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     public function visitNew(Node $node)
     {
         try {
-            // TODO: is this the best way to do it?
-            // * Should we use $is_new_expression = true?
             $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
             ))->getMethodList('__construct', false, true, true);
-        } catch (Exception $e) {
+        } catch (Exception $_) {
             return;
         }
         $this->genericVisitClassElements($elements, 'method');
