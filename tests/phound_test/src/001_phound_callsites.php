@@ -80,9 +80,13 @@ $a->baz(); // AST_METHOD_CALL
 
 $class_name = 'A';
 $method_name = 'bar';
-
 (new $class_name)->$method_name();
 
-echo "\nclosure\n";
+$class_name = $a->getBOrCClassName();
+new $class_name;
+
 $cl = Closure::fromCallable([$a, 'foo']);
+$cl();
+
+$cl = Closure::fromCallable([$a->getBOrC(), 'foo']);
 $cl();
