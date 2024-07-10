@@ -26,17 +26,25 @@ class A {
         $b_or_c = $this->getBOrC();
         $b_or_c->foo();
         echo $b_or_c->bar;
+
+        $class_name = get_class($b_or_c);
+        $class_name::zoo();
+        echo $class_name::$baz;
     }
 }
 
 class B {
     public $bar = 1;
+    public static $baz = 2;
     function foo() {}
+    static function zoo() {}
 }
 
 class C {
     public $bar = 1;
+    public static $baz = 2;
     function foo() {}
+    static function zoo() {}
 }
 
 function yo() { echo "yo\n"; }
