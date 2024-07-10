@@ -46,14 +46,18 @@ EXPECTED=$(cat <<-EOF
 \B::baz|prop|src/001_phound_callsites.php:40
 \C::baz|prop|src/001_phound_callsites.php:40
 \B::BOO|const|src/001_phound_callsites.php:41
+\C::BOO|const|src/001_phound_callsites.php:41
 \A::foo|method|src/001_phound_callsites.php:64
 \A::bar|method|src/001_phound_callsites.php:65
 \A::foo|method|src/001_phound_callsites.php:67
-\A::bar|method|src/001_phound_callsites.php:68
-\A::baz|method|src/001_phound_callsites.php:69
-\A::bar|method|src/001_phound_callsites.php:74
-\A::foo|method|src/001_phound_callsites.php:77
-\Closure::fromCallable|method|src/001_phound_callsites.php:77
+\A::getBOrC|method|src/001_phound_callsites.php:68
+\B::foo|method|src/001_phound_callsites.php:68
+\C::foo|method|src/001_phound_callsites.php:68
+\A::bar|method|src/001_phound_callsites.php:69
+\A::baz|method|src/001_phound_callsites.php:70
+\A::bar|method|src/001_phound_callsites.php:75
+\A::foo|method|src/001_phound_callsites.php:78
+\Closure::fromCallable|method|src/001_phound_callsites.php:78
 EOF
 )
 
