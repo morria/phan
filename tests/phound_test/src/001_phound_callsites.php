@@ -61,9 +61,7 @@ class C {
 function yo() { echo "yo\n"; }
 
 class TestConstructor {
-    function __construct() {
-        echo "yo\n";
-    }
+    function __construct() {}
 }
 class TestConstructor2 extends TestConstructor {
     function __construct() {
@@ -85,7 +83,7 @@ $method_name = 'bar';
 (new $class_name)->$method_name();
 
 $class_name = $a->getBOrCClassName();
-new $class_name;
+(new $class_name)->foo();
 
 $cl = Closure::fromCallable([$a, 'foo']);
 $cl();
