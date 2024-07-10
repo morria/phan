@@ -118,7 +118,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethodList('__construct', false, true);
+            ))->getMethodList('__construct', false, true, true);
         } catch (Exception $e) {
             return;
         }
