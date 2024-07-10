@@ -42,7 +42,9 @@ EXPECTED=$(cat <<-EOF
 \C::bar|prop|src/001_phound_callsites.php:36
 \A::getBOrCClassName|method|src/001_phound_callsites.php:38
 \B::zoo|method|src/001_phound_callsites.php:39
+\C::zoo|method|src/001_phound_callsites.php:39
 \B::baz|prop|src/001_phound_callsites.php:40
+\C::baz|prop|src/001_phound_callsites.php:40
 \A::foo|method|src/001_phound_callsites.php:61
 \A::bar|method|src/001_phound_callsites.php:62
 \A::foo|method|src/001_phound_callsites.php:64
