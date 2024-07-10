@@ -45,14 +45,15 @@ EXPECTED=$(cat <<-EOF
 \C::zoo|method|src/001_phound_callsites.php:39
 \B::baz|prop|src/001_phound_callsites.php:40
 \C::baz|prop|src/001_phound_callsites.php:40
-\A::foo|method|src/001_phound_callsites.php:61
-\A::bar|method|src/001_phound_callsites.php:62
+\B::BOO|const|src/001_phound_callsites.php:41
 \A::foo|method|src/001_phound_callsites.php:64
 \A::bar|method|src/001_phound_callsites.php:65
-\A::baz|method|src/001_phound_callsites.php:66
-\A::bar|method|src/001_phound_callsites.php:71
-\A::foo|method|src/001_phound_callsites.php:74
-\Closure::fromCallable|method|src/001_phound_callsites.php:74
+\A::foo|method|src/001_phound_callsites.php:67
+\A::bar|method|src/001_phound_callsites.php:68
+\A::baz|method|src/001_phound_callsites.php:69
+\A::bar|method|src/001_phound_callsites.php:74
+\A::foo|method|src/001_phound_callsites.php:77
+\Closure::fromCallable|method|src/001_phound_callsites.php:77
 EOF
 )
 
