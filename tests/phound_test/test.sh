@@ -63,8 +63,8 @@ EXPECTED=$(cat <<-EOF
 \A::bar|method|src/001_phound_callsites.php:83
 \A::getBOrCClassName|method|src/001_phound_callsites.php:85
 \B::__construct|method|src/001_phound_callsites.php:86
-\C::__construct|method|src/001_phound_callsites.php:86
 \B::foo|method|src/001_phound_callsites.php:86
+\C::__construct|method|src/001_phound_callsites.php:86
 \C::foo|method|src/001_phound_callsites.php:86
 \A::foo|method|src/001_phound_callsites.php:88
 \Closure::fromCallable|method|src/001_phound_callsites.php:88

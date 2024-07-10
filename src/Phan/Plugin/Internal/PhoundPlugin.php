@@ -109,6 +109,9 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
         return $stmt;
     }
 
+    /**
+     * @throws Exception
+     */
     public function visitNew(Node $node)
     {
         try {
