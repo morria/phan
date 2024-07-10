@@ -132,15 +132,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     public function visitStaticCall(Node $node)
     {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethod($node->children['method'], true, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList($node->children['method'], true, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement([$element], 'method');
+        $this->genericVisitClassElement($elements, 'method');
     }
 
     /**
@@ -166,15 +166,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitStaticProp(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getProperty(true);
+            ))->getPropertyList(true);
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement([$element], 'prop');
+        $this->genericVisitClassElement($elements, 'prop');
     }
 
     /**
