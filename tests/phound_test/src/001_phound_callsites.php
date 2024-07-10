@@ -22,12 +22,20 @@ class A {
         }
     }
 
+    public function getBOrCClassName() {
+        if (random_int(0, 10) < 5) {
+            return B::class;
+        } else {
+            return C::class;
+        }
+    }
+
     function callBOrC() {
         $b_or_c = $this->getBOrC();
         $b_or_c->foo();
         echo $b_or_c->bar;
 
-        $class_name = get_class($b_or_c);
+        $class_name = $this->getBOrCClassName();
         $class_name::zoo();
         echo $class_name::$baz;
     }
