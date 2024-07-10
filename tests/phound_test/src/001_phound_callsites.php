@@ -61,7 +61,9 @@ class C {
 function yo() { echo "yo\n"; }
 
 class TestConstructor {
-    function __construct() {}
+    function __construct() {
+        echo "yo\n";
+    }
 }
 class TestConstructor2 extends TestConstructor {
     function __construct() {
