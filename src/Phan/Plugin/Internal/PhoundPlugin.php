@@ -74,7 +74,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
             create table callsites(
                 element TEXT NOT NULL,
                 type TEXT NOT NULL,
-                callsite TEXT NOT NULL
+                callsite TEXT NOT NULL,
                 PRIMARY KEY (element, type, callsite)
             )
             EOD
