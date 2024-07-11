@@ -922,11 +922,15 @@ class ContextNode
                 $class_without_method = $class->getFQSEN();
             }
         }
-        if (
-            (!$methods || ($is_direct && $methods[0]->isFakeConstructor() && $first_match)) &&
-            $last_call_method
-        ) {
-            $methods[] = $last_call_method;
+
+        // I don't understand what the isFakeConstructor clause is for, but I want to preserve the pre-existing
+        // behavior when $first_match is true.
+        if ($first_match && (!$methods || ($is_direct && $methods[0]->isFakeConstructor()))) {
+            if ($last_call_method) {
+                $methods[] = $last_call_method;
+            } else {
+                $methods = [];
+            }
         } else {
             $methods = array_merge($methods, $call_methods);
         }
