@@ -69,15 +69,20 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
             throw new Exception();
         }
 
-        if (!self::$db->exec('create table callsites(element TEXT NOT NULL, type TEXT NOT NULL, callsite TEXT NOT NULL, id INTEGER PRIMARY KEY)')) {
+        if (!self::$db->exec(
+            <<<'EOD'
+            create table callsites(
+                element TEXT NOT NULL,
+                type TEXT NOT NULL,
+                callsite TEXT NOT NULL
+                PRIMARY KEY (element, type, callsite)
+            )
+            EOD
+        )) {
             throw new Exception();
         }
 
         if (!self::$db->exec('CREATE INDEX element_and_callsite ON callsites (element, callsite)')) {
-            throw new Exception();
-        }
-
-        if (!self::$db->exec('CREATE UNIQUE INDEX element_type_and_callsite ON callsites (element, type, callsite)')) {
             throw new Exception();
         }
 
@@ -141,6 +146,17 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
             return;
         }
         $this->genericVisitClassElements($elements, 'method');
+    }
+
+
+    /**
+     * @param Node $node a node of type AST_NULLSAFE_METHOD_CALL
+     * @override
+     * @throws Exception
+     */
+    public function visitNullsafeMethodCall(Node $node): void
+    {
+        $this->visitMethodCall($node);
     }
 
     /**
@@ -279,17 +295,6 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
 
         $stmt = self::createBulkInsertPreparedStatement(count(self::$callsites));
         self::doBulkWrite($stmt);
-    }
-
-
-    /**
-     * @param Node $node a node of type AST_NULLSAFE_METHOD_CALL
-     * @override
-     * @throws Exception
-     */
-    public function visitNullsafeMethodCall(Node $node): void
-    {
-        $this->visitMethodCall($node);
     }
 
 }
