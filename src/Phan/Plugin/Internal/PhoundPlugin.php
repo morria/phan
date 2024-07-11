@@ -77,7 +77,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
                 callsite TEXT NOT NULL,
                 PRIMARY KEY (element, type, callsite)
             )
-            EOD
+EOD
         )) {
             throw new Exception();
         }
