@@ -28,7 +28,10 @@ if ! ../../phan --force-polyfill-parser --memory-limit 1G --analyze-twice ; then
     exit 1
 fi
 
-ACTUAL=$(sqlite3 ~/phound.db 'select element, type, callsite from callsites order by callsite, element, type')
+# Regarding `order by cast(substr(callsite, instr(callsite, ":") + 1) as integer)` -
+# This orders by the callsite line number. It avoids weirdness where, for example,
+# 'foo.php:10' might otherwise appear ahead of 'foo.php:9' when treated as a string.
+ACTUAL=$(sqlite3 ~/phound.db 'select * from callsites order by cast(substr(callsite, instr(callsite, ":") + 1) as integer), element, type')
 EXPECTED=$(cat <<-EOF
 \A::foo|const|src/001_phound_callsites.php:10
 \A::foo|prop|src/001_phound_callsites.php:11
@@ -72,6 +75,11 @@ EXPECTED=$(cat <<-EOF
 \B::foo|method|src/001_phound_callsites.php:94
 \C::foo|method|src/001_phound_callsites.php:94
 \Closure::fromCallable|method|src/001_phound_callsites.php:94
+\A::getBOrC|method|src/001_phound_callsites.php:97
+\B::methodOnlyDefinedInB|method|src/001_phound_callsites.php:97
+\A::getBOrC|method|src/001_phound_callsites.php:97
+\B::methodOnlyDefinedInB|method|src/001_phound_callsites.php:99
+\B::prop_only_public_in_b|prop|src/001_phound_callsites.php:100
 EOF
 )
 
