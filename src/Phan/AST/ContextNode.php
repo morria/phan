@@ -774,6 +774,7 @@ class ContextNode
             $methods = [];
             foreach ($method_name_type->getTypeSet() as $type) {
                 if ($type instanceof LiteralStringType) {
+                    $these_methods = [];
                     try {
                         // TODO: Warn about nullable?
                         $these_methods = $this->getMethodListInternal(
@@ -792,7 +793,6 @@ class ContextNode
                         // exception.
                     }
 
-                    '@phan-var list<Method> $these_methods';
                     if ($should_return_first_match) {
                         return $these_methods;
                     } else {
