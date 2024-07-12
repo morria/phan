@@ -46,14 +46,17 @@ class B {
     const BOO = 0;
     public $bar = 1;
     public static $baz = 2;
+    public $prop_only_public_in_b = 0;
     function foo() {}
     static function zoo() {}
+    function methodOnlyDefinedInB() {}
 }
 
 class C {
     const BOO = 0;
     public $bar = 1;
     public static $baz = 2;
+    private $prop_only_public_in_b = 0;
     function foo() {}
     static function zoo() {}
 }
@@ -90,3 +93,6 @@ $cl();
 
 $cl = Closure::fromCallable([$a->getBOrC(), 'foo']);
 $cl();
+
+$a->getBOrC()->methodOnlyDefinedInB();
+$a->getBOrC()->prop_only_public_in_b;
