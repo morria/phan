@@ -792,8 +792,8 @@ class ContextNode
                         // exception.
                     }
 
+                    '@phan-var list<Method> $these_methods';
                     if ($should_return_first_match) {
-                        assert(is_array($these_methods));
                         return $these_methods;
                     } else {
                         $methods = array_merge($methods, $these_methods);
