@@ -76,8 +76,6 @@ EXPECTED=$(cat <<-EOF
 \C::foo|method|src/001_phound_callsites.php:94
 \Closure::fromCallable|method|src/001_phound_callsites.php:94
 \A::getBOrC|method|src/001_phound_callsites.php:97
-\B::methodOnlyDefinedInB|method|src/001_phound_callsites.php:97
-\A::getBOrC|method|src/001_phound_callsites.php:97
 \B::methodOnlyDefinedInB|method|src/001_phound_callsites.php:99
 \B::prop_only_public_in_b|prop|src/001_phound_callsites.php:100
 EOF
