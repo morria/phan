@@ -1666,8 +1666,13 @@ class ContextNode
                     );
                 }
 
-                $class_without_property = $class;
-                continue;
+                if (!$is_static && $class->hasGetMethod($this->code_base) && !$should_return_first_match) {
+                    // Don't skip ahead if __get is implemented and we're returning the full property list.
+                    // This means we'll add the magic property to the returned list.
+                } else {
+                    $class_without_property = $class;
+                    continue;
+                }
             }
             if ($properties && $should_return_first_match) {
                 continue;
