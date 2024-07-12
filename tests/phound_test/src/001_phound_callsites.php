@@ -95,4 +95,4 @@ $cl = Closure::fromCallable([$a->getBOrC(), 'foo']);
 $cl();
 
 $a->getBOrC()->methodOnlyDefinedInB();
-$a->getBOrC()->prop_only_public_in_b;
+echo $a->getBOrC()->prop_only_public_in_b;
