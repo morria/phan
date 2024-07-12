@@ -94,5 +94,8 @@ $cl();
 $cl = Closure::fromCallable([$a->getBOrC(), 'foo']);
 $cl();
 
-$a->getBOrC()->methodOnlyDefinedInB();
+$b_or_c = $a->getBOrC();
+
+$method_name = (random_int(0, 10) < 5) ? 'methodOnlyDefinedInB' : 'foo';
+$b_or_c->$method_name();
 echo $a->getBOrC()->prop_only_public_in_b;
