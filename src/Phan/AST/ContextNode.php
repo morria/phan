@@ -741,7 +741,7 @@ class ContextNode
      * @param bool $is_new_expression
      * Set to true if this is (new (expr)())
      *
-     * @param bool $first_match
+     * @param bool $should_return_first_match
      * Set to true to short circuit and return only the first method found.
      *
      * @return list<Method>
@@ -762,7 +762,7 @@ class ContextNode
         bool $is_static,
         bool $is_direct,
         bool $is_new_expression,
-        bool $first_match
+        bool $should_return_first_match
     ): array {
 
         if ($method_name instanceof Node) {
@@ -774,15 +774,25 @@ class ContextNode
             $methods = [];
             foreach ($method_name_type->getTypeSet() as $type) {
                 if ($type instanceof LiteralStringType) {
-                    // TODO: Warn about nullable?
-                    $these_methods = $this->getMethodListInternal(
-                        $type->getValue(),
-                        $is_static,
-                        $is_direct,
-                        $is_new_expression,
-                        $first_match
-                    );
-                    if ($first_match) {
+                    try {
+                        // TODO: Warn about nullable?
+                        $these_methods = $this->getMethodListInternal(
+                            $type->getValue(),
+                            $is_static,
+                            $is_direct,
+                            $is_new_expression,
+                            $should_return_first_match
+                        );
+                    } catch (Exception $e) {
+                        if ($should_return_first_match) {
+                            throw $e;
+                        }
+                        // When returning the full method list, don't let an exception handling
+                        // some elements of the list prevent returning the rest. Swallow the
+                        // exception.
+                    }
+
+                    if ($should_return_first_match) {
                         return $these_methods;
                     } else {
                         $methods = array_merge($methods, $these_methods);
@@ -897,7 +907,7 @@ class ContextNode
         // looking for
         foreach ($class_list as $class) {
             if ($class->hasMethodWithName($this->code_base, $method_name, $is_direct)) {
-                if ($first_match && $methods) {
+                if ($should_return_first_match && $methods) {
                     // TODO: Could favor the most generic subclass in a union type
                     continue;
                 }
@@ -924,8 +934,8 @@ class ContextNode
         }
 
         // I don't understand what the isFakeConstructor clause is for, but I want to preserve the pre-existing
-        // behavior when $first_match is true.
-        if ($first_match && (!$methods || ($is_direct && $methods[0]->isFakeConstructor()))) {
+        // behavior when $should_return_first_match is true.
+        if ($should_return_first_match && (!$methods || ($is_direct && $methods[0]->isFakeConstructor()))) {
             if ($last_call_method) {
                 $methods[] = $last_call_method;
             } else {
@@ -1538,7 +1548,7 @@ class ContextNode
      * True if we're looking for a static property,
      * false if we're looking for an instance property.
      *
-     * @param bool $first_match
+     * @param bool $should_return_first_match
      * Set to true to short circuit and return only the first method found.
      *
      * @return list<Property>
@@ -1561,7 +1571,7 @@ class ContextNode
     private function getPropertyListInternal(
         bool $is_static,
         bool $is_known_assignment,
-        bool $first_match
+        bool $should_return_first_match
     ): array {
         $node = $this->node;
 
@@ -1642,7 +1652,11 @@ class ContextNode
                 // If there's a getter on properties then all
                 // bets are off. However, @phan-forbid-undeclared-magic-properties
                 // will make this method analyze the code as if all properties were declared or had @property annotations.
-                if (!$is_static && $class->hasGetMethod($this->code_base) && !$class->getForbidUndeclaredMagicProperties($this->code_base)) {
+                if (
+                    !$is_static && $class->hasGetMethod($this->code_base) &&
+                    !$class->getForbidUndeclaredMagicProperties($this->code_base) &&
+                    $should_return_first_match
+                ) {
                     throw new UnanalyzableMagicPropertyException(
                         $node,
                         $class,
@@ -1654,18 +1668,30 @@ class ContextNode
                 $class_without_property = $class;
                 continue;
             }
-            if ($properties && $first_match) {
+            if ($properties && $should_return_first_match) {
                 continue;
             }
 
-            $property = $class->getPropertyByNameInContext(
-                $this->code_base,
-                $property_name,
-                $this->context,
-                $is_static,
-                $node,
-                $is_known_assignment
-            );
+            try {
+                $property = $class->getPropertyByNameInContext(
+                    $this->code_base,
+                    $property_name,
+                    $this->context,
+                    $is_static,
+                    $node,
+                    $is_known_assignment
+                );
+            } catch (Exception $e) {
+                if ($should_return_first_match) {
+                    throw $e;
+                } else {
+                    // When returning the full property list, don't let an exception handling
+                    // some elements of the list prevent returning the rest. Swallow the
+                    // exception.
+                    continue;
+                }
+            }
+
             $properties[] = $property;
 
             if ($property->isDeprecated()) {
@@ -1734,7 +1760,7 @@ class ContextNode
                         $node,
                         $is_known_assignment
                     );
-                    if ($first_match) {
+                    if ($should_return_first_match) {
                         break;
                     }
                 }
@@ -2143,7 +2169,7 @@ class ContextNode
     }
 
     /**
-     * @param bool $first_match
+     * @param bool $should_return_first_match
      * Set to true to short circuit and return only the first method found.
      *
      * @return list<ClassConstant>
@@ -2165,7 +2191,7 @@ class ContextNode
      * An exception is thrown if an issue is found while getting
      * the list of possible classes.
      */
-    public function getClassConstListInternal(bool $first_match): array
+    public function getClassConstListInternal(bool $should_return_first_match): array
     {
         $node = $this->node;
         if (!($node instanceof Node)) {
@@ -2255,7 +2281,7 @@ class ContextNode
                 );
             }
 
-            if ($first_match) {
+            if ($should_return_first_match) {
                 return $constants;
             }
         }

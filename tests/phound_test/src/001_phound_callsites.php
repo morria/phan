@@ -97,4 +97,4 @@ $cl();
 $b_or_c = $a->getBOrC();
 $method_name = (random_int(0, 10) < 5) ? 'methodOnlyDefinedInB' : 'methodDefinedNowhere';
 $b_or_c->$method_name();
-echo $a->getBOrC()->prop_only_public_in_b;
+echo $b_or_c->prop_only_public_in_b;
