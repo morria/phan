@@ -735,7 +735,7 @@ class ContextNode
      * @param bool $is_static
      * Set to true if this is a static method call
      *
-     * @param bool $is_direct @phan-mandatory-param
+     * @param bool $is_direct
      * Set to true if this is directly invoking the method (guaranteed not to be special syntax)
      *
      * @param bool $is_new_expression

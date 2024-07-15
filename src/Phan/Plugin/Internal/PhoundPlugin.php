@@ -141,7 +141,7 @@ EOD
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethodList($node->children['method'], false); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList($node->children['method'], false, false); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
         } catch (Exception $_) {
             return;
         }
@@ -169,7 +169,7 @@ EOD
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethodList($node->children['method'], true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList($node->children['method'], true, false); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
         } catch (Exception $_) {
             return;
         }
