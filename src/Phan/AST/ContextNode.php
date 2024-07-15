@@ -1658,6 +1658,9 @@ class ContextNode
                     !$class->getForbidUndeclaredMagicProperties($this->code_base) &&
                     $should_return_first_match
                 ) {
+                    // Regarding the `$should_return_first_match` clause: when returning the full property list,
+                    // don't let an exception handling some elements of the list prevent returning the rest.
+                    // Swallow the exception.
                     throw new UnanalyzableMagicPropertyException(
                         $node,
                         $class,
