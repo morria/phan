@@ -2297,7 +2297,7 @@ return [
 'DOMNode::getNodePath' => ['?string'],
 'DOMNode::hasAttributes' => ['bool'],
 'DOMNode::hasChildNodes' => ['bool'],
-'DOMNode::insertBefore' => ['DOMNode', 'node'=>'DOMNode', 'child='=>'DOMNode'],
+'DOMNode::insertBefore' => ['DOMNode', 'node'=>'DOMNode', 'child='=>'?DOMNode'],
 'DOMNode::isDefaultNamespace' => ['bool', 'namespace'=>'string'],
 'DOMNode::isSameNode' => ['bool', 'otherNode'=>'DOMNode'],
 'DOMNode::isSupported' => ['bool', 'feature'=>'string', 'version'=>'string'],
