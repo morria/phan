@@ -4322,7 +4322,7 @@ return [
 'Google\Protobuf\Internal\Message::discardUnknownFields' => [''],
 'Google\Protobuf\Internal\Message::hasOneof' => ['', 'field'=>''],
 'Google\Protobuf\Internal\Message::mergeFrom' => ['', 'data'=>''],
-'Google\Protobuf\Internal\Message::mergeFromJsonString' => ['', 'data'=>''],
+'Google\Protobuf\Internal\Message::mergeFromJsonString' => ['', 'data'=>'', 'ignore_json_unknown='=>'bool'],
 'Google\Protobuf\Internal\Message::mergeFromString' => ['', 'data'=>''],
 'Google\Protobuf\Internal\Message::readOneof' => ['', 'field'=>''],
 'Google\Protobuf\Internal\Message::readWrapperValue' => ['', 'field'=>''],
