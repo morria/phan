@@ -69,15 +69,20 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
             throw new Exception();
         }
 
-        if (!self::$db->exec('create table callsites(element TEXT NOT NULL, type TEXT NOT NULL, callsite TEXT NOT NULL, id INTEGER PRIMARY KEY)')) {
+        if (!self::$db->exec(
+            <<<'EOD'
+            create table callsites(
+                element TEXT NOT NULL,
+                type TEXT NOT NULL,
+                callsite TEXT NOT NULL,
+                PRIMARY KEY (element, type, callsite)
+            )
+EOD
+        )) {
             throw new Exception();
         }
 
         if (!self::$db->exec('CREATE INDEX element_and_callsite ON callsites (element, callsite)')) {
-            throw new Exception();
-        }
-
-        if (!self::$db->exec('CREATE INDEX element_type_and_callsite ON callsites (element, type, callsite)')) {
             throw new Exception();
         }
 
@@ -99,7 +104,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      * @throws Exception
      */
     private static function createBulkInsertPreparedStatement(int $bulk_insert_size): SQLite3Stmt {
-        $bulk_insert_sql = "INSERT INTO callsites ('element', 'type', 'callsite') VALUES ";
+        $bulk_insert_sql = "INSERT OR IGNORE INTO callsites ('element', 'type', 'callsite') VALUES ";
         $bulk_insert_sql .= str_repeat("(?, ?, ?), ", $bulk_insert_size);
         $bulk_insert_sql = rtrim($bulk_insert_sql, ', ');
         $stmt = self::$db->prepare($bulk_insert_sql);
@@ -112,18 +117,46 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     /**
      * @throws Exception
      */
-    public function visitMethodCall(Node $node)
+    public function visitNew(Node $node)
     {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethod($node->children['method'], false, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList('__construct', false, false, true);
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'method');
+        $this->genericVisitClassElements($elements, 'method');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function visitMethodCall(Node $node)
+    {
+        try {
+            $elements = (new ContextNode(
+                $this->code_base,
+                $this->context,
+                $node
+            ))->getMethodList($node->children['method'], false, false); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+        } catch (Exception $_) {
+            return;
+        }
+        $this->genericVisitClassElements($elements, 'method');
+    }
+
+
+    /**
+     * @param Node $node a node of type AST_NULLSAFE_METHOD_CALL
+     * @override
+     * @throws Exception
+     */
+    public function visitNullsafeMethodCall(Node $node): void
+    {
+        $this->visitMethodCall($node);
     }
 
     /**
@@ -132,15 +165,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     public function visitStaticCall(Node $node)
     {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getMethod($node->children['method'], true, true); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
+            ))->getMethodList($node->children['method'], true, false); // @phan-suppress-current-line PhanPartialTypeMismatchArgument
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'method');
+        $this->genericVisitClassElements($elements, 'method');
     }
 
     /**
@@ -149,15 +182,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitClassConst(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getClassConst();
+            ))->getClassConstList();
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'const');
+        $this->genericVisitClassElements($elements, 'const');
     }
 
     /**
@@ -166,15 +199,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitStaticProp(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getProperty(true);
+            ))->getPropertyList(true);
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'prop');
+        $this->genericVisitClassElements($elements, 'prop');
     }
 
     /**
@@ -183,15 +216,15 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
      */
     public function visitProp(Node $node) {
         try {
-            $element = (new ContextNode(
+            $elements = (new ContextNode(
                 $this->code_base,
                 $this->context,
                 $node
-            ))->getProperty(false);
+            ))->getPropertyList(false);
         } catch (Exception $_) {
             return;
         }
-        $this->genericVisitClassElement($element, 'prop');
+        $this->genericVisitClassElements($elements, 'prop');
     }
 
     /**
@@ -203,18 +236,20 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
     }
 
     /**
-     * Helper function to add a class element to the DB
-     * @param  ClassElement $element
+     * Helper function to add class elements to the DB
+     * @param  list<ClassElement> $elements
      * @param  string       $type
      * @throws Exception
      */
-    public function genericVisitClassElement(ClassElement $element, string $type): void {
-        $element_name = $element->getFQSEN()->__toString();
-        $callsite = $this->context->__toString();
-        self::$callsites[] = [$element_name, $type, $callsite];
+    public function genericVisitClassElements(array $elements, string $type): void {
+        foreach ($elements as $element) {
+            $element_name = $element->getFQSEN()->__toString();
+            $callsite = $this->context->__toString();
+            self::$callsites[] = [$element_name, $type, $callsite];
 
-        if (count(self::$callsites) >= self::BULK_INSERT_SIZE) {
-            self::doBulkWrite(self::$prepared_insert);
+            if (count(self::$callsites) >= self::BULK_INSERT_SIZE) {
+                self::doBulkWrite(self::$prepared_insert);
+            }
         }
     }
 
@@ -260,17 +295,6 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
 
         $stmt = self::createBulkInsertPreparedStatement(count(self::$callsites));
         self::doBulkWrite($stmt);
-    }
-
-
-    /**
-     * @param Node $node a node of type AST_NULLSAFE_METHOD_CALL
-     * @override
-     * @throws Exception
-     */
-    public function visitNullsafeMethodCall(Node $node): void
-    {
-        $this->visitMethodCall($node);
     }
 
 }
@@ -350,14 +374,16 @@ final class PhoundPlugin extends PluginV3 implements PostAnalyzeNodeCapability, 
                 return;
             }
 
-            $phound_visitor = null;
+            $elements = [];
             foreach ($function_like_list as $function) {
                 if ($function instanceof ClassElement) {
-                    if ($phound_visitor === null) {
-                        $phound_visitor = new PhoundVisitor($code_base, $context);
-                    }
-                    $phound_visitor->genericVisitClassElement($function, 'method');
+                    $elements[] = $function;
                 }
+            }
+
+            if ($elements) {
+                $phound_visitor = new PhoundVisitor($code_base, $context);
+                $phound_visitor->genericVisitClassElements($elements, 'method');
             }
         };
 

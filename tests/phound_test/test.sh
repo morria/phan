@@ -23,26 +23,61 @@ echo "Running phan in '$PWD' ..."
 rm -rf ~/phound.db
 
 # We use the polyfill parser because it behaves consistently in all php versions.
-if ! ../../phan --force-polyfill-parser --memory-limit 1G ; then
+if ! ../../phan --force-polyfill-parser --memory-limit 1G --analyze-twice ; then
     echo "Phan found some errors - this is unexpected"
     exit 1
 fi
 
-ACTUAL=$(sqlite3 ~/phound.db 'select element, type, callsite from callsites order by callsite, element, type')
+# Regarding `order by cast(substr(callsite, instr(callsite, ":") + 1) as integer)` -
+# This orders by the callsite line number. It avoids weirdness where, for example,
+# 'foo.php:10' might otherwise appear ahead of 'foo.php:9' when treated as a string.
+ACTUAL=$(sqlite3 ~/phound.db 'select * from callsites order by cast(substr(callsite, instr(callsite, ":") + 1) as integer), element, type')
 EXPECTED=$(cat <<-EOF
 \A::foo|const|src/001_phound_callsites.php:10
 \A::foo|prop|src/001_phound_callsites.php:11
 \A::fooz|prop|src/001_phound_callsites.php:12
 \A::foo|method|src/001_phound_callsites.php:13
 \A::bar|method|src/001_phound_callsites.php:14
-\A::foo|method|src/001_phound_callsites.php:21
-\A::bar|method|src/001_phound_callsites.php:22
-\A::foo|method|src/001_phound_callsites.php:24
-\A::bar|method|src/001_phound_callsites.php:25
-\A::baz|method|src/001_phound_callsites.php:26
-\A::bar|method|src/001_phound_callsites.php:31
-\A::foo|method|src/001_phound_callsites.php:34
-\Closure::fromCallable|method|src/001_phound_callsites.php:34
+\B::__construct|method|src/001_phound_callsites.php:19
+\C::__construct|method|src/001_phound_callsites.php:21
+\A::getBOrC|method|src/001_phound_callsites.php:34
+\B::foo|method|src/001_phound_callsites.php:35
+\C::foo|method|src/001_phound_callsites.php:35
+\B::bar|prop|src/001_phound_callsites.php:36
+\C::bar|prop|src/001_phound_callsites.php:36
+\A::getBOrCClassName|method|src/001_phound_callsites.php:38
+\B::zoo|method|src/001_phound_callsites.php:39
+\C::zoo|method|src/001_phound_callsites.php:39
+\B::baz|prop|src/001_phound_callsites.php:40
+\C::baz|prop|src/001_phound_callsites.php:40
+\B::BOO|const|src/001_phound_callsites.php:41
+\C::BOO|const|src/001_phound_callsites.php:41
+\TestConstructor::__construct|method|src/001_phound_callsites.php:71
+\A::__construct|method|src/001_phound_callsites.php:75
+\A::foo|method|src/001_phound_callsites.php:76
+\A::bar|method|src/001_phound_callsites.php:77
+\A::foo|method|src/001_phound_callsites.php:79
+\A::getBOrC|method|src/001_phound_callsites.php:80
+\B::foo|method|src/001_phound_callsites.php:80
+\C::foo|method|src/001_phound_callsites.php:80
+\A::bar|method|src/001_phound_callsites.php:81
+\A::baz|method|src/001_phound_callsites.php:82
+\A::__construct|method|src/001_phound_callsites.php:86
+\A::bar|method|src/001_phound_callsites.php:86
+\A::getBOrCClassName|method|src/001_phound_callsites.php:88
+\B::__construct|method|src/001_phound_callsites.php:89
+\B::foo|method|src/001_phound_callsites.php:89
+\C::__construct|method|src/001_phound_callsites.php:89
+\C::foo|method|src/001_phound_callsites.php:89
+\A::foo|method|src/001_phound_callsites.php:91
+\Closure::fromCallable|method|src/001_phound_callsites.php:91
+\A::getBOrC|method|src/001_phound_callsites.php:94
+\B::foo|method|src/001_phound_callsites.php:94
+\C::foo|method|src/001_phound_callsites.php:94
+\Closure::fromCallable|method|src/001_phound_callsites.php:94
+\A::getBOrC|method|src/001_phound_callsites.php:97
+\B::methodOnlyDefinedInB|method|src/001_phound_callsites.php:99
+\B::prop_only_public_in_b|prop|src/001_phound_callsites.php:100
 EOF
 )
 

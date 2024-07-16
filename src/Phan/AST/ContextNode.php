@@ -640,6 +640,8 @@ class ContextNode
     }
 
     /**
+     * Returns only the first method found that could possibly correspond to this callsite.
+     *
      * @param Node|string $method_name
      * Either then name of the method or a node that
      * produces the name of the method.
@@ -672,6 +674,96 @@ class ContextNode
         bool $is_direct = false,
         bool $is_new_expression = false
     ): Method {
+        return $this->getMethodListInternal(
+            $method_name,
+            $is_static,
+            $is_direct,
+            $is_new_expression,
+            true
+        )[0];
+    }
+
+    /**
+     * Returns the full list of methods that could possibly correspond to this callsite.
+     *
+     * @param Node|string $method_name
+     * Either then name of the method or a node that
+     * produces the name of the method.
+     *
+     * @param bool $is_static
+     * Set to true if this is a static method call
+     *
+     * @param bool $is_direct @phan-mandatory-param
+     * Set to true if this is directly invoking the method (guaranteed not to be special syntax)
+     *
+     * @param bool $is_new_expression
+     * Set to true if this is (new (expr)())
+     *
+     * @return list<Method>
+     * A list of methods with the given name on the classes referenced
+     * from the given node
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * method
+     *
+     * @throws IssueException
+     */
+    public function getMethodList(
+        $method_name,
+        bool $is_static,
+        bool $is_direct = false,
+        bool $is_new_expression = false
+    ): array {
+        return $this->getMethodListInternal(
+            $method_name,
+            $is_static,
+            $is_direct,
+            $is_new_expression,
+            false
+        );
+    }
+
+    /**
+     * @param Node|string $method_name
+     * Either then name of the method or a node that
+     * produces the name of the method.
+     *
+     * @param bool $is_static
+     * Set to true if this is a static method call
+     *
+     * @param bool $is_direct
+     * Set to true if this is directly invoking the method (guaranteed not to be special syntax)
+     *
+     * @param bool $is_new_expression
+     * Set to true if this is (new (expr)())
+     *
+     * @param bool $should_return_first_match
+     * Set to true to short circuit and return only the first method found.
+     *
+     * @return list<Method>
+     * A list of methods with the given name on the classes referenced
+     * from the given node
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * method
+     *
+     * @throws IssueException
+     */
+    private function getMethodListInternal(
+        $method_name,
+        bool $is_static,
+        bool $is_direct,
+        bool $is_new_expression,
+        bool $should_return_first_match
+    ): array {
 
         if ($method_name instanceof Node) {
             $method_name_type = UnionTypeVisitor::unionTypeFromNode(
@@ -679,19 +771,47 @@ class ContextNode
                 $this->context,
                 $method_name
             );
+            $methods = [];
             foreach ($method_name_type->getTypeSet() as $type) {
                 if ($type instanceof LiteralStringType) {
-                    // TODO: Warn about nullable?
-                    return $this->getMethod($type->getValue(), $is_static, $is_direct, $is_new_expression);
+                    $these_methods = [];
+                    try {
+                        // TODO: Warn about nullable?
+                        $these_methods = $this->getMethodListInternal(
+                            $type->getValue(),
+                            $is_static,
+                            $is_direct,
+                            $is_new_expression,
+                            $should_return_first_match
+                        );
+                    } catch (Exception $e) {
+                        if ($should_return_first_match) {
+                            throw $e;
+                        }
+                        // When returning the full method list, don't let an exception handling
+                        // some elements of the list prevent returning the rest. Swallow the
+                        // exception.
+                    }
+
+                    if ($should_return_first_match) {
+                        return $these_methods;
+                    } else {
+                        $methods = array_merge($methods, $these_methods);
+                    }
                 }
             }
-            // The method_name turned out to be a variable.
-            // There isn't much we can do to figure out what
-            // it's referring to.
-            throw new NodeException(
-                $method_name,
-                "Unexpected method node"
-            );
+
+            if (!$methods) {
+                // The method_name turned out to be a variable.
+                // There isn't much we can do to figure out what
+                // it's referring to.
+                throw new NodeException(
+                    $method_name,
+                    "Unexpected method node"
+                );
+            } else {
+                return $methods;
+            }
         }
 
         if (!\is_string($method_name)) {
@@ -780,14 +900,15 @@ class ContextNode
             );
         }
         $class_without_method = null;
-        $method = null;
-        $call_method = null;
+        $methods = [];
+        $call_methods = [];
+        $last_call_method = null;
 
         // Hunt to see if any of them have the method we're
         // looking for
         foreach ($class_list as $class) {
             if ($class->hasMethodWithName($this->code_base, $method_name, $is_direct)) {
-                if ($method) {
+                if ($should_return_first_match && $methods) {
                     // TODO: Could favor the most generic subclass in a union type
                     continue;
                 }
@@ -801,19 +922,34 @@ class ContextNode
                     } catch (RecursionDepthException $_) {
                     }
                 }
+                $methods[] = $method;
             } elseif (!$is_static && $class->allowsCallingUndeclaredInstanceMethod($this->code_base)) {
-                $call_method = $class->getCallMethod($this->code_base);
+                $last_call_method = $class->getCallMethod($this->code_base);
+                $call_methods[] = $last_call_method;
             } elseif ($is_static && $class->allowsCallingUndeclaredStaticMethod($this->code_base)) {
-                $call_method = $class->getCallStaticMethod($this->code_base);
+                $last_call_method = $class->getCallStaticMethod($this->code_base);
+                $call_methods[] = $last_call_method;
             } else {
                 $class_without_method = $class->getFQSEN();
             }
         }
-        if (!$method || ($is_direct && $method->isFakeConstructor())) {
-            $method = $call_method;
+
+        // I don't understand what the isFakeConstructor clause is for, but I want to preserve the pre-existing
+        // behavior when $should_return_first_match is true.
+        if ($should_return_first_match && (!$methods || ($is_direct && $methods[0]->isFakeConstructor()))) {
+            if ($last_call_method) {
+                $methods[] = $last_call_method;
+            } else {
+                $methods = [];
+            }
+        } else {
+            $methods = array_merge($methods, $call_methods);
         }
-        if ($method) {
-            if ($class_without_method && Config::get_strict_method_checking() && !$this->isDefinitelyPossiblyUndeclaredMethod($node, $method_name, $is_direct)) {
+        if ($methods) {
+            if (
+                $class_without_method && Config::get_strict_method_checking() &&
+                !$this->isDefinitelyPossiblyUndeclaredMethod($node, $method_name, $is_direct)
+            ) {
                 $this->emitIssue(
                     Issue::PossiblyUndeclaredMethod,
                     $node->lineno,
@@ -824,7 +960,7 @@ class ContextNode
                     $class_without_method
                 );
             }
-            return $method;
+            return $methods;
         }
 
         $first_class = $class_list[0];
@@ -1349,12 +1485,13 @@ class ContextNode
     }
 
     /**
+     * Returns only the first property found that could possibly correspond to this callsite.
+     *
      * @param bool $is_static
      * True if we're looking for a static property,
      * false if we're looking for an instance property.
      *
      * @return Property
-     * Phan's representation of a property declaration.
      *
      * @throws NodeException
      * An exception is thrown if we can't understand the node
@@ -1373,6 +1510,70 @@ class ContextNode
         bool $is_static,
         bool $is_known_assignment = false
     ): Property {
+        return $this->getPropertyListInternal($is_static, $is_known_assignment, true)[0];
+    }
+
+    /**
+     * Returns the full list of properties that could possibly correspond to this callsite.
+     *
+     * @param bool $is_static
+     * True if we're looking for a static property,
+     * false if we're looking for an instance property.
+     *
+     * @return list<Property>
+     * A list of properties with the given name on the classes referenced
+     * from the given node.
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws IssueException
+     * An exception is thrown if we can't find the given
+     * class or if we don't have access to the property (its
+     * private or protected)
+     * or if the property is static and missing.
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     */
+    public function getPropertyList(
+        bool $is_static,
+        bool $is_known_assignment = false
+    ): array {
+        return $this->getPropertyListInternal($is_static, $is_known_assignment, false);
+    }
+
+    /**
+     * @param bool $is_static
+     * True if we're looking for a static property,
+     * false if we're looking for an instance property.
+     *
+     * @param bool $should_return_first_match
+     * Set to true to short circuit and return only the first method found.
+     *
+     * @return list<Property>
+     * A list of properties with the given name on the classes referenced
+     * from the given node.
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws IssueException
+     * An exception is thrown if we can't find the given
+     * class or if we don't have access to the property (its
+     * private or protected)
+     * or if the property is static and missing.
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     */
+    private function getPropertyListInternal(
+        bool $is_static,
+        bool $is_known_assignment,
+        bool $should_return_first_match
+    ): array {
         $node = $this->node;
 
         if (!($node instanceof Node)) {
@@ -1438,6 +1639,7 @@ class ContextNode
 
         $class_without_property = null;
         $property = null;
+        $properties = [];
         foreach ($class_list as $class) {
             $class_fqsen = $class->getFQSEN();
 
@@ -1451,7 +1653,14 @@ class ContextNode
                 // If there's a getter on properties then all
                 // bets are off. However, @phan-forbid-undeclared-magic-properties
                 // will make this method analyze the code as if all properties were declared or had @property annotations.
-                if (!$is_static && $class->hasGetMethod($this->code_base) && !$class->getForbidUndeclaredMagicProperties($this->code_base)) {
+                if (
+                    !$is_static && $class->hasGetMethod($this->code_base) &&
+                    !$class->getForbidUndeclaredMagicProperties($this->code_base) &&
+                    $should_return_first_match
+                ) {
+                    // Regarding the `$should_return_first_match` clause: when returning the full property list,
+                    // don't let an exception handling some elements of the list prevent returning the rest.
+                    // Swallow the exception.
                     throw new UnanalyzableMagicPropertyException(
                         $node,
                         $class,
@@ -1463,18 +1672,31 @@ class ContextNode
                 $class_without_property = $class;
                 continue;
             }
-            if ($property) {
+            if ($properties && $should_return_first_match) {
                 continue;
             }
 
-            $property = $class->getPropertyByNameInContext(
-                $this->code_base,
-                $property_name,
-                $this->context,
-                $is_static,
-                $node,
-                $is_known_assignment
-            );
+            try {
+                $property = $class->getPropertyByNameInContext(
+                    $this->code_base,
+                    $property_name,
+                    $this->context,
+                    $is_static,
+                    $node,
+                    $is_known_assignment
+                );
+            } catch (Exception $e) {
+                if ($should_return_first_match) {
+                    throw $e;
+                } else {
+                    // When returning the full property list, don't let an exception handling
+                    // some elements of the list prevent returning the rest. Swallow the
+                    // exception.
+                    continue;
+                }
+            }
+
+            $properties[] = $property;
 
             if ($property->isDeprecated()) {
                 $this->emitIssue(
@@ -1508,7 +1730,7 @@ class ContextNode
                 !($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF)) {
             self::checkPossiblyUndeclaredInstanceProperty($this->code_base, $this->context, $node, $property_name);
         }
-        if ($property) {
+        if ($properties) {
             if ($class_without_property && Config::get_strict_object_checking() &&
                     !($node->flags & PhanAnnotationAdder::FLAG_IGNORE_UNDEF)) {
                 $this->emitIssue(
@@ -1523,7 +1745,7 @@ class ContextNode
                     $class_without_property->getFQSEN()
                 );
             }
-            return $property;
+            return $properties;
         }
 
         // Since we didn't find the property on any of the
@@ -1534,7 +1756,7 @@ class ContextNode
                 if (Config::getValue('allow_missing_properties')
                     || $class->hasDynamicProperties($this->code_base)
                 ) {
-                    return $class->getPropertyByNameInContext(
+                    $properties[] = $class->getPropertyByNameInContext(
                         $this->code_base,
                         $property_name,
                         $this->context,
@@ -1542,31 +1764,15 @@ class ContextNode
                         $node,
                         $is_known_assignment
                     );
+                    if ($should_return_first_match) {
+                        break;
+                    }
                 }
             }
-        }
-
-        /*
-        $std_class_fqsen =
-            FullyQualifiedClassName::getStdClassFQSEN();
-
-        // If missing properties are cool, create it on
-        // the first class we found
-        if (!$is_static && ($class_fqsen && ($class_fqsen === $std_class_fqsen))
-            || Config::getValue('allow_missing_properties')
-        ) {
-            if (count($class_list) > 0) {
-                $class = $class_list[0];
-                return $class->getPropertyByNameInContext(
-                    $this->code_base,
-                    $property_name,
-                    $this->context,
-                    $is_static,
-                    $node
-                );
+            if ($properties) {
+                return $properties;
             }
         }
-        */
 
         // If the class isn't found, we'll get the message elsewhere
         if ($class_fqsen) {
@@ -1913,8 +2119,11 @@ class ContextNode
     }
 
     /**
+     * Returns only the first class constant found that could
+     * possibly correspond to this callsite.
+     *
      * @return ClassConstant
-     * Get the class constant associated with this node
+     * Get the first class constant associated with this node
      * in this context
      *
      * @throws NodeException
@@ -1932,7 +2141,61 @@ class ContextNode
      * An exception is thrown if an issue is found while getting
      * the list of possible classes.
      */
-    public function getClassConst(): ClassConstant
+    public function getClassConst(): ClassConstant {
+        return $this->getClassConstListInternal(true)[0];
+    }
+
+    /**
+     * Returns the full list of class constants that could
+     * possibly correspond to this callsite.
+     *
+     * @return list<ClassConstant>
+     * Get the list of class constants associated with this node
+     * in this context
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * class
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     *
+     * @throws IssueException
+     * An exception is thrown if an issue is found while getting
+     * the list of possible classes.
+     */
+    public function getClassConstList(): array {
+        return $this->getClassConstListInternal(false);
+    }
+
+    /**
+     * @param bool $should_return_first_match
+     * Set to true to short circuit and return only the first method found.
+     *
+     * @return list<ClassConstant>
+     * Get the list of class constants associated with this node
+     * in this context
+     *
+     * @throws NodeException
+     * An exception is thrown if we can't understand the node
+     *
+     * @throws CodeBaseException
+     * An exception is thrown if we can't find the given
+     * class
+     *
+     * @throws UnanalyzableException
+     * An exception is thrown if we hit a construct in which
+     * we can't determine if the property exists or not
+     *
+     * @throws IssueException
+     * An exception is thrown if an issue is found while getting
+     * the list of possible classes.
+     */
+    public function getClassConstListInternal(bool $should_return_first_match): array
     {
         $node = $this->node;
         if (!($node instanceof Node)) {
@@ -1977,6 +2240,7 @@ class ContextNode
             );
         }
 
+        $constants = [];
         foreach ($class_list as $class) {
             // Remember the last analyzed class for the next issue message
             $class_fqsen = $class->getFQSEN();
@@ -1994,6 +2258,7 @@ class ContextNode
                 $constant_name,
                 $this->context
             );
+            $constants[] = $constant;
 
             if ($constant->isNSInternal($this->code_base)
                 && !$constant->isNSInternalAccessFromContext(
@@ -2020,7 +2285,13 @@ class ContextNode
                 );
             }
 
-            return $constant;
+            if ($should_return_first_match) {
+                return $constants;
+            }
+        }
+
+        if ($constants) {
+            return $constants;
         }
 
         // If no class is found, we'll emit the error elsewhere

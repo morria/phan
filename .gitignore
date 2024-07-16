@@ -21,3 +21,4 @@ out/
 phpspy.*
 .phpunit.result.cache
 errors.txt
+.DS_Store
