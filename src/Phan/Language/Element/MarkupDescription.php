@@ -478,7 +478,7 @@ class MarkupDescription
         if (\end($summary) === '') {
             \array_pop($summary);
         }
-        if (count($summary) === 1 && count(\preg_split('/\s+/', \trim($summary[0]))) <= 2) {
+        if (count($summary) === 1 && count((array)\preg_split('/\s+/', \trim($summary[0]))) <= 2) {
             // For something uninformative such as "* (at)return int" (and nothing else),
             // don't treat it as a summary.
             //
