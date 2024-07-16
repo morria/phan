@@ -28,7 +28,7 @@ final class CodeClimatePrinter implements BufferedPrinterInterface
 
     public function print(IssueInstance $instance): void
     {
-        $this->messages[] = [
+        $message = [
             'type' => 'issue',
             'check_name' => $instance->getIssue()->getType(),
             'description' => $instance->getMessageAndMaybeSuggestion(),
@@ -43,6 +43,11 @@ final class CodeClimatePrinter implements BufferedPrinterInterface
                 ],
             ],
         ];
+        if ($instance->getColumn() !== 0) {
+            $message['location']['lines']['column'] = $instance->getColumn();
+        }
+
+        $this->messages[] = $message;
     }
 
     private static function mapSeverity(int $raw_severity): string
