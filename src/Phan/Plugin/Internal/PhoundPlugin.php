@@ -36,7 +36,7 @@ final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
 
     // Avoid `SQLite3::prepare(): Unable to prepare statement: 1, too many SQL variables`
     // See #9: https://www.sqlite.org/limits.html
-    private const BULK_INSERT_SIZE = 999 / self::NUM_DB_COLS;
+    private const BULK_INSERT_SIZE = 3;
 
     /** @var SQLite3 */
     private static $db;
