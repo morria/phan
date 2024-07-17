@@ -32,7 +32,7 @@ use Phan\Config;
 final class PhoundVisitor extends PluginAwarePostAnalysisVisitor
 {
 
-    private const NUM_DB_COLS = 3; // element, type, callsite
+    // private const NUM_DB_COLS = 3; // element, type, callsite
 
     // Avoid `SQLite3::prepare(): Unable to prepare statement: 1, too many SQL variables`
     // See #9: https://www.sqlite.org/limits.html
