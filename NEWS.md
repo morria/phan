@@ -1,7 +1,18 @@
 Phan NEWS
 
-??? ?? 202?, Phan 5.4.4 (dev)
+Jul 25 2024, Phan 5.4.4
 -----------------------
+New features:
+- New plugin [PhoundPlugin](https://github.com/phan/phan/blob/3a17b9697c63b4807c6cddaa4112962e49cce5d0/src/Phan/Plugin/Internal/PhoundPlugin.php#L13-L31) to populate a sqlite database with callsites of all class elements. The database can be queried to find callsites of a given class element. This was actually introduced in 5.4.3, but not announced at the time. [#18](https://github.com/phan/phan/issues/18)
+- In 5.4.4, the accuracy of PhoundPlugin is improved by giving it access to the full method, property, and constant list that phan infers for a given callsite [#4865](https://github.com/phan/phan/pull/4865)
+
+Miscellaneous:
+- Fix DOMNode::insertBefore method signature [#4837](https://github.com/phan/phan/pull/4837)
+- Update Google\Protobuf\Internal\Message::mergeFromJsonString method signature [#4840](https://github.com/phan/phan/pull/4840)
+- Update fputcsv function signature [#4856](https://github.com/phan/phan/pull/4856)
+- Update preg_replace_* function signatures [#4856](https://github.com/phan/phan/pull/4856)
+- Update ReflectionClass::getConstants and ReflectionObject::getConstants method signatures [#4861](https://github.com/phan/phan/pull/4861)
+- Add support to column position on file location in CodeClimatePrinter [#4862](https://github.com/phan/phan/pull/4862)
 
 Dec 26 2023, Phan 5.4.3
 -----------------------
