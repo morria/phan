@@ -94,7 +94,8 @@ class ClassConstantTypesAnalyzer
                     }
                     if ($has_object) {
                         $class_fqsen = $outer_type->asFQSEN();
-                        if ( $class_fqsen instanceof FullyQualifiedClassName ) {
+                        if ( $class_fqsen instanceof FullyQualifiedClassName
+                            && $code_base->hasClassWithFQSEN($class_fqsen)) {
                             $clazz = $code_base->getClassByFQSEN($class_fqsen);
                             if ( $clazz->isEnum() ) {
                                 continue;
