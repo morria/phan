@@ -79,7 +79,7 @@ return [
     'IntlChar::tolower' => ['mixed', 'codepoint'=>'mixed'],
     'IntlChar::totitle' => ['mixed', 'codepoint'=>'mixed'],
     'IntlChar::toupper' => ['mixed', 'codepoint'=>'mixed'],
-    'preg_replace_callback_array' => ['string|string[]', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
+    'preg_replace_callback_array' => ['string|string[]|null', 'pattern'=>'array<string,callable(array):string>', 'subject'=>'string|array', 'limit='=>'int', '&w_count='=>'int'],
     'random_bytes' => ['string', 'length'=>'int'],
     'random_int' => ['int', 'min'=>'int', 'max'=>'int'],
   ],
