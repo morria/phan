@@ -93,6 +93,13 @@ class ClassConstantTypesAnalyzer
                         }
                     }
                     if ($has_object) {
+                        $class_fqsen = $outer_type->asFQSEN();
+                        if ( $class_fqsen instanceof FullyQualifiedClassName ) {
+                            $clazz = $code_base->getClassByFQSEN($class_fqsen);
+                            if ( $clazz->isEnum() ) {
+                                continue;
+                            }
+                        }
                         Issue::maybeEmitWithParameters(
                             $code_base,
                             $constant->getContext(),
