@@ -27,7 +27,7 @@ class ClassConstantTypesAnalyzer
         foreach ($clazz->getConstantMap($code_base) as $constant) {
             // This phase is done before the analysis phase, so there aren't any dynamic properties to filter out.
 
-            // Get the union type of this constant. This may throw (e.g. it can refers to missing elements).
+            // Get the union type of this constant. This may throw (e.g. it can refer to missing elements).
             $comment = $constant->getComment();
             if (!$comment) {
                 continue;
@@ -58,7 +58,7 @@ class ClassConstantTypesAnalyzer
                     $has_object = $outer_type->isObject();
                     foreach ($outer_type->getReferencedClasses() as $type) {
                         $has_object = true;
-                        // If it's a reference to self, its OK
+                        // If it's a reference to self, it's OK
                         if ($type->isSelfType()) {
                             continue;
                         }
