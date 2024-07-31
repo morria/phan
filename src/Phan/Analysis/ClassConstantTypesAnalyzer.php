@@ -10,6 +10,7 @@ use Phan\Issue;
 use Phan\IssueFixSuggester;
 use Phan\Language\Element\Clazz;
 use Phan\Language\FQSEN\FullyQualifiedClassName;
+use Phan\Language\Type;
 use Phan\Language\Type\TemplateType;
 use Phan\Language\UnionType;
 
@@ -55,9 +56,9 @@ class ClassConstantTypesAnalyzer
                 }
                 // Look at each type in the parameter's Union Type
                 foreach ($union_type->withFlattenedArrayShapeOrLiteralTypeInstances()->getTypeSet() as $outer_type) {
-                    $has_object = $outer_type->isObject();
+                    $has_object = $outer_type->isObject() && ! self::typeIsEnum( $code_base, $outer_type );
                     foreach ($outer_type->getReferencedClasses() as $type) {
-                        $has_object = true;
+                        $has_object = ! self::typeIsEnum( $code_base, $type );
                         // If it's a reference to self, it's OK
                         if ($type->isSelfType()) {
                             continue;
@@ -93,14 +94,6 @@ class ClassConstantTypesAnalyzer
                         }
                     }
                     if ($has_object) {
-                        $class_fqsen = $outer_type->asFQSEN();
-                        if ( $class_fqsen instanceof FullyQualifiedClassName
-                            && $code_base->hasClassWithFQSEN($class_fqsen)) {
-                            $clazz = $code_base->getClassByFQSEN($class_fqsen);
-                            if ( $clazz->isEnum() ) {
-                                continue;
-                            }
-                        }
                         Issue::maybeEmitWithParameters(
                             $code_base,
                             $constant->getContext(),
@@ -112,5 +105,21 @@ class ClassConstantTypesAnalyzer
                 }
             }
         }
+    }
+
+
+    private static function typeIsEnum( CodeBase $code_base, Type $type ) : bool {
+        if ( ! $type->isObject() ) {
+            return false;
+        }
+        $class_fqsen = $type->asFQSEN();
+        if ( $class_fqsen instanceof FullyQualifiedClassName
+            && $code_base->hasClassWithFQSEN($class_fqsen)) {
+            $clazz = $code_base->getClassByFQSEN($class_fqsen);
+            if ( $clazz->isEnum() ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
