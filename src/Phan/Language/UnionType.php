@@ -4156,7 +4156,6 @@ class UnionType implements Serializable, Stringable
      *
      * @param  UnionType $right_type
      * @param  CodeBase  $code_base
-     * @return UnionType
      */
     public static function getTypeForGenericArrayDestructuringAccess(UnionType $right_type, CodeBase $code_base): UnionType {
         return $right_type->genericArrayElementTypes(false, $code_base)
