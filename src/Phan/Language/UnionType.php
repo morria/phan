@@ -4059,7 +4059,7 @@ class UnionType implements Serializable, Stringable
      * @param bool $add_real_types if true, this adds the real types that would be possible for `$x[$offset]`
      * @suppress PhanStaticClassAccessWithStaticVariable static variables are safely initialized
      */
-    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base): UnionType
+    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base, bool $include_array_shape_types = true): UnionType
     {
         // This is frequently called, and has been optimized
         $result = [];
@@ -4069,6 +4069,10 @@ class UnionType implements Serializable, Stringable
                 if ($type instanceof GenericArrayType) {
                     $result[] = $type->genericArrayElementType();
                 } else {
+                    // It's a shaped array (TODO: confirm)
+                    if (!$include_array_shape_types) {
+                        continue;
+                    }
                     foreach ($type->genericArrayElementUnionType()->getTypeSet() as $inner_type) {
                         $result[] = $inner_type;
                     }
@@ -4158,7 +4162,7 @@ class UnionType implements Serializable, Stringable
      * @param  CodeBase  $code_base
      */
     public static function getTypeForGenericArrayDestructuringAccess(UnionType $right_type, CodeBase $code_base): UnionType {
-        return $right_type->genericArrayElementTypes(false, $code_base)
+        return $right_type->genericArrayElementTypes(false, $code_base, false)
             ->withRealTypeSet(
                 self::computeRealElementTypesForDestructuringAccess($right_type->getRealTypeSet(), $code_base)
             );
