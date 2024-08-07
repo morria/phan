@@ -4197,6 +4197,9 @@ class UnionType implements Serializable, Stringable
             if (!$type instanceof ArrayType) {
                 return [];
             }
+            if ($type instanceof ArrayShapeType) {
+                continue;
+            }
             $new_types = $type->genericArrayElementUnionType()->getTypeSet();
             if (!$new_types) {
                 return [];
