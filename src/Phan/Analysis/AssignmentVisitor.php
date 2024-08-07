@@ -365,15 +365,6 @@ class AssignmentVisitor extends AnalysisVisitor
      */
     private function analyzeShapedArrayAssignment(Node $node): void
     {
-        // Figure out the type of elements in the list
-        $fallback_element_type = null;
-        /** @suppress PhanAccessMethodInternal */
-        $get_fallback_element_type = function () use (&$fallback_element_type): UnionType {
-            return $fallback_element_type ?? ($fallback_element_type = (
-                $this->right_type->genericArrayElementTypes(false, $this->code_base)
-                                 ->withRealTypeSet(UnionType::computeRealElementTypesForDestructuringAccess($this->right_type->getRealTypeSet(), $this->code_base))));
-        };
-
         $expect_string_keys_lineno = false;
         $expect_int_keys_lineno = false;
 
@@ -436,7 +427,7 @@ class AssignmentVisitor extends AnalysisVisitor
             if (\is_scalar($key_value)) {
                 $element_type = UnionTypeVisitor::resolveArrayShapeElementTypesForOffset($this->right_type, $key_value, false, $this->code_base);
                 if ($element_type === null) {
-                    $element_type = $get_fallback_element_type();
+                    $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($this->right_type, $this->code_base);
                 } elseif ($element_type === false) {
                     $this->emitIssue(
                         Issue::TypeInvalidDimOffsetArrayDestructuring,
@@ -445,7 +436,7 @@ class AssignmentVisitor extends AnalysisVisitor
                         ASTReverter::toShortString($child_node),
                         (string)$this->right_type
                     );
-                    $element_type = $get_fallback_element_type();
+                    $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($this->right_type, $this->code_base);
                 } else {
                     if ($element_type->hasRealTypeSet()) {
                         $element_type = self::withComputedRealUnionType($element_type, $this->right_type, function (UnionType $new_right_type) use ($key_value): UnionType {
@@ -454,7 +445,7 @@ class AssignmentVisitor extends AnalysisVisitor
                     }
                 }
             } else {
-                $element_type = $get_fallback_element_type();
+                $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($this->right_type, $this->code_base);
             }
 
             $this->analyzeValueNodeOfShapedArray($element_type, $child_node->children['value']);
@@ -681,10 +672,7 @@ class AssignmentVisitor extends AnalysisVisitor
                     'array|ArrayAccess'
                 );
             }
-            $element_type =
-                $array_access_types->genericArrayElementTypes(false, $this->code_base)
-                                   ->withRealTypeSet(UnionType::computeRealElementTypesForDestructuringAccess($right_type->getRealTypeSet(), $this->code_base));
-            // @phan-suppress-previous-line PhanAccessMethodInternal
+            $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($array_access_types, $this->code_base);
         }
 
         $expect_string_keys_lineno = false;

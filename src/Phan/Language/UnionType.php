@@ -4148,12 +4148,30 @@ class UnionType implements Serializable, Stringable
     }
 
     /**
+     * Returns the UnionType for of an element of the LHS in a destructuring assignment such as:
+     * `[$a, $b] = expr`
+     *
+     * This only handles the generic arrays that the RHS consists of. This will not handle
+     * the array shape types of the RHS.
+     *
+     * @param  UnionType $right_type
+     * @param  CodeBase  $code_base
+     * @return UnionType
+     */
+    public static function getTypeForGenericArrayDestructuringAccess(UnionType $right_type, CodeBase $code_base): UnionType {
+        return $right_type->genericArrayElementTypes(false, $code_base)
+            ->withRealTypeSet(
+                self::computeRealElementTypesForDestructuringAccess($right_type->getRealTypeSet(), $code_base)
+            );
+    }
+
+    /**
      * Returns the real types seen for an array destructuring expression such as `[$x] = expr`
      * @param non-empty-list<Type> $real_type_set the set of types of expr
      * @return list<Type> possibly empty, possibly with duplicates. These types are nullable to indicate that array accesses can fail.
      * @internal
      */
-    public static function computeRealElementTypesForDestructuringAccess(array $real_type_set, CodeBase $code_base): array
+    private static function computeRealElementTypesForDestructuringAccess(array $real_type_set, CodeBase $code_base): array
     {
         $result = [];
         foreach ($real_type_set as $type) {
