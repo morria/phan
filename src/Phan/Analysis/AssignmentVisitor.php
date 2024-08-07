@@ -672,7 +672,7 @@ class AssignmentVisitor extends AnalysisVisitor
                     'array|ArrayAccess'
                 );
             }
-            $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($array_access_types, $this->code_base);
+            $element_type = UnionType::getTypeForGenericArrayDestructuringAccess($right_type, $this->code_base);
         }
 
         $expect_string_keys_lineno = false;
