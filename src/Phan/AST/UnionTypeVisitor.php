@@ -2151,13 +2151,11 @@ class UnionTypeVisitor extends AnalysisVisitor
      */
     public static function resolveArrayShapeElementTypesForOffset(UnionType $union_type, $dim_value, bool $is_computing_real_type_set, CodeBase $code_base)
     {
-        /**
-         * @var bool $has_non_array_shape_type this will be true if there are types that support array access
-         *           but have unknown array shapes in $union_type
-         */
-        $has_generic_array = false;
+        // Get the possible element types from non-array shape arrays in the $union_type.
+        $resulting_element_type = UnionType::getTypeForGenericArrayDestructuringAccess($union_type, $code_base);
+
+        $has_generic_array = false; // True if there are non-array shape arrays in the $union_type
         $has_string = false;
-        $resulting_element_type = null;
         foreach ($union_type->getTypeSet() as $type) {
             if (!($type instanceof ArrayShapeType)) {
                 if ($type instanceof StringType) {
@@ -2165,11 +2163,7 @@ class UnionTypeVisitor extends AnalysisVisitor
                     if (\is_int($dim_value) || \filter_var($dim_value, \FILTER_VALIDATE_INT) !== false) {
                         // If we request a string offset from a string, that's not valid. Only accept integer dimensions as valid.
                         // in php, indices of strings can be negative
-                        if ($resulting_element_type instanceof UnionType) {
-                            $resulting_element_type = $resulting_element_type->withType(StringType::instance(false));
-                        } else {
-                            $resulting_element_type = StringType::instance(false)->asPHPDocUnionType();
-                        }
+                        $resulting_element_type = $resulting_element_type->withType(StringType::instance(false));
                     } else {
                         // TODO: Warn about string indices of strings?
                     }
@@ -2196,11 +2190,7 @@ class UnionTypeVisitor extends AnalysisVisitor
             if ($element_type !== null) {
                 // $element_type may be non-null but $element_type->isEmpty() may be true.
                 // So, we use null to indicate failure below
-                if ($resulting_element_type instanceof UnionType) {
-                    $resulting_element_type = $resulting_element_type->withUnionType($element_type);
-                } else {
-                    $resulting_element_type = $element_type;
-                }
+                $resulting_element_type = $resulting_element_type->withUnionType($element_type);
             }
         }
         if ($resulting_element_type === null) {
