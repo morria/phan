@@ -339,11 +339,19 @@ class Config
         'guess_unknown_parameter_type_using_default' => false,
 
         // Allow adding types to vague return types such as @return object, @return ?mixed in function/method/closure union types.
-        // Normally, Phan only adds inferred returned types when there is no `@return` type or real return type signature..
+        // Normally, Phan only adds inferred returned types when there is no `@return` type or real return type signature.
         // This setting can be disabled on individual methods by adding `@phan-hardcode-return-type` to the doc comment.
         //
         // Disabled by default. This is more useful with `--analyze-twice`.
         'allow_overriding_vague_return_types' => false,
+
+        // Add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
+        // or real return type signature. This setting can be disabled on individual methods by adding
+        // `@phan-hardcode-return-type` to the doc comment.
+        //
+        // Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
+        // detect more callsite possibilities.
+        'override_return_types' => false,
 
         // When enabled, infer that the types of the properties of `$this` are equal to their default values at the start of `__construct()`.
         // This will have some false positives due to Phan not checking for setters and initializing helpers.
