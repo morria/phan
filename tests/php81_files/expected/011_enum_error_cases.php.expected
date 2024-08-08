@@ -5,7 +5,7 @@
 %s:8 PhanPluginUnknownMethodParamType Method \TT::__set has no declared or inferred parameter type for $value
 %s:9 PhanEmptyPublicMethod Empty public method \TT::__invoke()
 %s:9 PhanPluginUnknownMethodReturnType Method \TT::__invoke() has no declared or inferred return type
-%s:10 PhanPluginUnknownMethodReturnType Method \TT::traitInstanceMethod() has no declared or inferred return type
+%s:10 PhanPluginUnknownMethodReturnType Method \TT::traitInstanceMethod() has no declared or inferred return type (Types inferred after analysis: int)
 %s:10 PhanUnreferencedPublicMethod Possibly zero references to public method \TT::traitInstanceMethod()
 %s:17 PhanEnumCannotHaveProperties Enum \Mu is not allowed to declare instance or static properties but it contains property $traitProperty declared at %s:4
 %s:17 PhanEnumForbiddenMagicMethod Enum \Mu is not allowed to have the magic method __construct() declared at %s:6
