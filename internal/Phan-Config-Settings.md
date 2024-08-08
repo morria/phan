@@ -214,17 +214,6 @@ Disabled by default. This is more useful with `--analyze-twice`.
 
 (Default: `false`)
 
-## override_return_types
-
-Add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
-or real return type signature. This setting can be disabled on individual methods by adding
-`@phan-hardcode-return-type` to the doc comment.
-
-Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
-detect more callsite possibilities.
-
-(Default: `false`)
-
 ## analyze_signature_compatibility
 
 If enabled, check all methods that override a
@@ -493,6 +482,17 @@ As long as this is kept relatively low, performance is usually not affected
 by changing this setting.
 
 (Default: `2`)
+
+## override_return_types
+
+Add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
+or real return type signature. This setting can be disabled on individual methods by adding
+`@phan-hardcode-return-type` to the doc comment.
+
+Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
+detect more callsite possibilities.
+
+(Default: `false`)
 
 ## parent_constructor_required
 
