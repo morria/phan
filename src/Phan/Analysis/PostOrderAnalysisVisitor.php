@@ -1662,7 +1662,7 @@ class PostOrderAnalysisVisitor extends AnalysisVisitor
             // For functions that aren't syntactically Generators,
             // update the set/existence of return values.
 
-            if ($method->isReturnTypeModifiable() && (!$is_mismatch || Config::getValue('override_return_types')) {
+            if ($method->isReturnTypeModifiable() && (!$is_mismatch || Config::getValue('override_return_types'))) {
                 // Add the new type to the set of values returned by the
                 // method
                 $method->setUnionType($method->getUnionType()->withUnionType($expression_type));
