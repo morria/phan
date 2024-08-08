@@ -1635,13 +1635,11 @@ class PostOrderAnalysisVisitor extends AnalysisVisitor
             if ($method_return_type->isEmpty()
                 || $method->isReturnTypeUndefined()
             ) {
-                if (!$is_trait) {
-                    $method->setIsReturnTypeUndefined(true);
+                $method->setIsReturnTypeUndefined(true);
 
-                    // Set the inferred type of the method based
-                    // on what we're returning
-                    $method->setUnionType($method->getUnionType()->withUnionType($expression_type));
-                }
+                // Set the inferred type of the method based
+                // on what we're returning
+                $method->setUnionType($method->getUnionType()->withUnionType($expression_type));
 
                 // No point in comparing this type to the
                 // type we just set
