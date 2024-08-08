@@ -2,7 +2,7 @@
 EXPECTED_PATH=expected/all_output.expected
 ACTUAL_PATH=all_output.actual
 if [ ! -d expected  ]; then
-    echo "Error: must run this script from tests/override_return_types folder" 1>&2
+    echo "Error: must run this script from tests/override_return_types_test folder" 1>&2
     exit 1
 fi
 echo "Generating test cases"
