@@ -1,0 +1,3 @@
+src/001_override_return_types.php:24 PhanTypeMismatchReturnProbablyReal Returning new Cat() of type \Cat but getAnimal2() is declared to return \Vegetable (no real type) (the inferred real return type has nothing in common with the declared phpdoc return type)
+src/001_override_return_types.php:29 PhanTypeMismatchArgumentReal Argument 1 ($v) is $this->getAnimal() of type \Animal|\Cat|\Dog but \OverrideReturnTypesTest::plant() takes \Vegetable defined at src/001_override_return_types.php:33
+src/001_override_return_types.php:30 PhanPartialTypeMismatchArgument Argument 1 ($v) is $this->getAnimal2() of type \Cat|\Vegetable but \OverrideReturnTypesTest::plant() takes \Vegetable (\Animal|\Cat is incompatible) defined at src/001_override_return_types.php:33
