@@ -490,7 +490,8 @@ or real return type signature. This setting can be disabled on individual method
 `@phan-hardcode-return-type` to the doc comment.
 
 Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
-detect more callsite possibilities.
+detect more callsite possibilities. See the [PR description](https://github.com/phan/phan/pull/4874) where
+this setting was added for more details.
 
 (Default: `false`)
 

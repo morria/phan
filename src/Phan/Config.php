@@ -350,7 +350,8 @@ class Config
         // `@phan-hardcode-return-type` to the doc comment.
         //
         // Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
-        // detect more callsite possibilities.
+        // detect more callsite possibilities. See the [PR description](https://github.com/phan/phan/pull/4874) where
+        // this setting was added for more details.
         'override_return_types' => false,
 
         // When enabled, infer that the types of the properties of `$this` are equal to their default values at the start of `__construct()`.
