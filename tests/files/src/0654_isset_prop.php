@@ -3,7 +3,7 @@
 /**
  * @param ?stdClass $x
  */
-function test_object(stdClass $x = null) {
+function test_object(?stdClass $x = null) {
     echo spl_object_hash($x);  // should infer ?stdClass
     if (isset($x->prop)) {
         echo spl_object_hash($x);  // should not warn
@@ -12,7 +12,7 @@ function test_object(stdClass $x = null) {
     }
 }
 
-function test_object_field_isset(stdClass $nested = null) {
+function test_object_field_isset(?stdClass $nested = null) {
     echo spl_object_hash($nested);  // should infer ?stdClass
     if (isset($nested->prop['a'][rand() % 2])) {
         echo spl_object_hash($nested);  // should not warn

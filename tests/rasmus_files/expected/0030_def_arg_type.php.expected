@@ -1,1 +1,2 @@
+%s:4 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\A $arg3 = null) have been deprecated in PHP 8.4
 %s:4 PhanTypeMismatchDefault Default value for int $arg2 can't be float

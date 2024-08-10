@@ -216,7 +216,7 @@ class Method extends ClassElement implements FunctionInterface
      * @param FullyQualifiedMethodName|null $fqsen
      * FQSEN of the overriding method, if available and $is_overridden_by_another is true.
      */
-    public function setIsOverriddenByAnother(bool $is_overridden_by_another, FullyQualifiedMethodName $fqsen = null): void
+    public function setIsOverriddenByAnother(bool $is_overridden_by_another, ?FullyQualifiedMethodName $fqsen = null): void
     {
         $this->setPhanFlags(Flags::bitVectorWithState(
             $this->getPhanFlags(),

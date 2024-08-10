@@ -116,7 +116,7 @@ class AssignmentVisitor extends AnalysisVisitor
         Node $assignment_node,
         UnionType $right_type,
         int $dim_depth = 0,
-        UnionType $dim_type = null
+        ?UnionType $dim_type = null
     ) {
         parent::__construct($code_base, $context);
 

@@ -17,6 +17,8 @@
 %s:27 PhanTypeInvalidUnaryOperandIncOrDec Invalid operator: unary operand of (expr)-- is ?\stdClass (expected int or string or float)
 %s:28 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $s of type \stdClass|int but \strlen() takes string
 %s:31 PhanTypeMismatchArgumentInternal Argument 1 ($string) is $v of type 3 but \strlen() takes string
+%s:36 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\stdClass $s = null) have been deprecated in PHP 8.4
+%s:36 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\stdClass $s2 = null) have been deprecated in PHP 8.4
 %s:37 PhanTypeInvalidUnaryOperandIncOrDec Invalid operator: unary operand of ++(expr) is object (expected int or string or float)
 %s:37 PhanTypeMismatchArgumentInternal Argument 1 ($string) is ++$x of type object but \strlen() takes string
 %s:38 PhanTypeInvalidUnaryOperandIncOrDec Invalid operator: unary operand of --(expr) is array (expected int or string or float)

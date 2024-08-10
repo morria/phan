@@ -169,7 +169,7 @@ function get_parameters_from_phan($fields): array
 /**
  * Given a reflection type, return Phan's union type string for that type
  */
-function getUnionTypeStringForReflectionType(ReflectionType $reflection_type = null): string
+function getUnionTypeStringForReflectionType(?ReflectionType $reflection_type = null): string
 {
     if (!$reflection_type) {
         return '';

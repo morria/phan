@@ -1,3 +1,4 @@
+src/049_redundant_null_coalescing.php:3 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (string $a = null) have been deprecated in PHP 8.4
 src/049_redundant_null_coalescing.php:4 PhanPluginDuplicateConditionalNullCoalescing "isset(X) ? X : Y" can usually be simplified to "X ?? Y" in PHP 7. The duplicated expression X was $a
 src/049_redundant_null_coalescing.php:5 PhanPluginDuplicateConditionalNullCoalescing "isset(X) ? X : Y" can usually be simplified to "X ?? Y" in PHP 7. The duplicated expression X was $x->prop
 src/049_redundant_null_coalescing.php:6 PhanPluginDuplicateExpressionBinaryOp Both sides of the binary operator == are the same: $x->prop

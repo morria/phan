@@ -2,3 +2,4 @@
 %s:16 PhanParamSignatureMismatch Declaration of function f(\CC $p) should be compatible with function f(\CB $p) defined in %s:8 (Expected \CC $p to have the same type as \CB $p or a supertype)
 %s:16 PhanParamSignatureRealMismatchParamType Declaration of function f(\CC $p) should be compatible with function f(\CB $p) (parameter #1 of real signature type '\CC' cannot replace original parameter of real signature type '\CB') defined in %s:8
 %s:20 PhanParamSignatureRealMismatchParamType Declaration of function f(\CA $p) should be compatible with function f(\CB $p) (parameter #1 of real signature type '\CA' cannot replace original parameter of real signature type '\CB') defined in %s:8
+%s:24 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\CB $p = null) have been deprecated in PHP 8.4

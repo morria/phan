@@ -416,6 +416,10 @@ function phan_error_handler(int $errno, string $errstr, string $errfile, int $er
             // Don't execute the PHP internal error handler
             return true;
         }
+        if (preg_match('/Implicitly marking parameter.*nullable/', $errstr)) {
+            // tolerant-php-parser and a few other dependencies have implicitly nullable parameters
+            return true;
+        }
     }
     if ($errno === E_NOTICE && preg_match('/^(iconv_strlen)/', $errstr)) {
         // Suppress deprecation notices in symfony/polyfill-mbstring

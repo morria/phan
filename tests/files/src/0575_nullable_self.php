@@ -8,7 +8,7 @@ trait Foo
     /** @var self[] */
     protected $other;
 
-    public function setParent(self $parent = null)
+    public function setParent(?self $parent = null)
     {
         $this->parent = $parent;
         $this->parent = null;

@@ -860,7 +860,7 @@ EOT;
      *
      * @dataProvider definitionInOtherFileProvider
      */
-    public function testDefinitionInOtherFile(string $new_file_contents, Position $position, string $expected_definition_uri, ?int $expected_definition_line, string $requested_uri = null): void
+    public function testDefinitionInOtherFile(string $new_file_contents, Position $position, string $expected_definition_uri, ?int $expected_definition_line, ?string $requested_uri = null): void
     {
         if (\function_exists('pcntl_fork')) {
             $this->runTestDefinitionInOtherFileWithPcntlSetting($new_file_contents, $position, $expected_definition_uri, $expected_definition_line, $requested_uri, true);
@@ -873,7 +873,7 @@ EOT;
      *
      * @dataProvider typeDefinitionInOtherFileProvider
      */
-    public function testTypeDefinitionInOtherFile(string $new_file_contents, Position $position, string $expected_definition_uri, ?int $expected_definition_line, string $requested_uri = null): void
+    public function testTypeDefinitionInOtherFile(string $new_file_contents, Position $position, string $expected_definition_uri, ?int $expected_definition_line, ?string $requested_uri = null): void
     {
         if (\function_exists('pcntl_fork')) {
             $this->runTestTypeDefinitionInOtherFileWithPcntlSetting($new_file_contents, $position, $expected_definition_uri, $expected_definition_line, $requested_uri, true);
@@ -885,7 +885,7 @@ EOT;
      * @dataProvider hoverInOtherFileProvider
      * @param ?string $expected_hover_markup
      */
-    public function testHoverInOtherFile(string $new_file_contents, Position $position, ?string $expected_hover_markup, string $requested_uri = null): void
+    public function testHoverInOtherFile(string $new_file_contents, Position $position, ?string $expected_hover_markup, ?string $requested_uri = null): void
     {
         if (\function_exists('pcntl_fork')) {
             $this->runTestHoverInOtherFileWithPcntlSetting(
@@ -1681,7 +1681,7 @@ EOT;
     /**
      * @param resource $proc_out
      */
-    private function assertHasEmptyPublishDiagnosticsNotification($proc_out, string $requested_uri = null): void
+    private function assertHasEmptyPublishDiagnosticsNotification($proc_out, ?string $requested_uri = null): void
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         $diagnostics_response = self::awaitResponse($proc_out);
@@ -1696,7 +1696,7 @@ EOT;
     /**
      * @param resource $proc_out
      */
-    private function assertHasNonEmptyPublishDiagnosticsNotification($proc_out, string $requested_uri = null): void
+    private function assertHasNonEmptyPublishDiagnosticsNotification($proc_out, ?string $requested_uri = null): void
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         $diagnostics_response = self::awaitResponse($proc_out);
@@ -1809,7 +1809,7 @@ EOT;
      * @return array<string,mixed> the response of the server to the "go to definition" request.
      * @throws InvalidArgumentException
      */
-    private function writeDefinitionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, string $requested_uri = null): array
+    private function writeDefinitionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, ?string $requested_uri = null): array
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         // Implementation detail: We simultaneously emit a notification with new diagnostics
@@ -1836,7 +1836,7 @@ EOT;
      * @return array<string,mixed> the response of the server to the completion request.
      * @throws InvalidArgumentException
      */
-    private function writeCompletionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, string $requested_uri = null): array
+    private function writeCompletionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, ?string $requested_uri = null): array
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         // Implementation detail: We simultaneously emit a notification with new diagnostics
@@ -1867,7 +1867,7 @@ EOT;
      * @return array<string,mixed> the response of the server to the type definition request
      * @throws InvalidArgumentException
      */
-    private function writeTypeDefinitionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, string $requested_uri = null): array
+    private function writeTypeDefinitionRequestAndAwaitResponse($proc_in, $proc_out, Position $position, ?string $requested_uri = null): array
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         // Implementation detail: We simultaneously emit a notification with new diagnostics
@@ -1894,7 +1894,7 @@ EOT;
      * @return array<string,mixed> the response of the server to the hover request
      * @throws InvalidArgumentException
      */
-    private function writeHoverRequestAndAwaitResponse($proc_in, $proc_out, Position $position, string $requested_uri = null, bool $is_repeated = false): array
+    private function writeHoverRequestAndAwaitResponse($proc_in, $proc_out, Position $position, ?string $requested_uri = null, bool $is_repeated = false): array
     {
         $requested_uri = $requested_uri ?? self::getDefaultFileURI();
         // Implementation detail: We simultaneously emit a notification with new diagnostics

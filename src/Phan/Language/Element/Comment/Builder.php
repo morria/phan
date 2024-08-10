@@ -1567,7 +1567,7 @@ final class Builder
         string $issue_type,
         int $issue_lineno,
         array $parameters,
-        Suggestion $suggestion = null
+        ?Suggestion $suggestion = null
     ): void {
         $this->issues[] = [
             $issue_type,

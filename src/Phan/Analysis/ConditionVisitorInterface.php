@@ -38,7 +38,7 @@ interface ConditionVisitorInterface
     public function updateVariableToBeEqual(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context;
 
     /**
@@ -49,7 +49,7 @@ interface ConditionVisitorInterface
     public function updateVariableToBeIdentical(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context;
 
     /**
@@ -60,7 +60,7 @@ interface ConditionVisitorInterface
     public function updateVariableToBeNotIdentical(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context;
 
     /**
@@ -83,7 +83,7 @@ interface ConditionVisitorInterface
     public function updateVariableToBeNotEqual(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context;
 
     /**

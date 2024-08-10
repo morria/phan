@@ -919,7 +919,7 @@ trait ConditionVisitorUtil
     final public function updateVariableToBeIdentical(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context {
         $context = $context ?? $this->context;
         try {
@@ -941,7 +941,7 @@ trait ConditionVisitorUtil
     final public function updateVariableToBeEqual(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context {
         $context = $context ?? $this->context;
         try {
@@ -1037,7 +1037,7 @@ trait ConditionVisitorUtil
     final public function updateVariableToBeNotIdentical(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context {
         $context = $context ?? $this->context;
         try {
@@ -1076,7 +1076,7 @@ trait ConditionVisitorUtil
     final public function updateVariableToBeNotEqual(
         Node $var_node,
         $expr,
-        Context $context = null
+        ?Context $context = null
     ): Context {
         $context = $context ?? $this->context;
 

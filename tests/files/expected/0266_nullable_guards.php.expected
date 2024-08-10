@@ -1,3 +1,4 @@
+%s:3 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $x = null) have been deprecated in PHP 8.4
 %s:8 PhanTypeMismatchArgument Argument 1 ($x) is ($x ?? 'default') of type 'default'|string but \expects_nullable_int266() takes ?int defined at %s:3
 %s:9 PhanCoalescingNeverUndefined Using $x ?? null seems unnecessary - the expression appears to always be defined
 %s:9 PhanTypeMismatchArgument Argument 1 ($x) is ($x ?? null) of type ?string but \expects_nullable_int266() takes ?int defined at %s:3

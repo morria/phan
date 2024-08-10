@@ -1,1 +1,2 @@
+%s:2 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\Closure $closure = null) have been deprecated in PHP 8.4
 %s:4 PhanTypeMismatchArgumentNullableInternal Argument 2 ($callback) is $closure of type ?\Closure but \usort() takes callable(mixed,mixed):int (expected type to be non-nullable)

@@ -1,6 +1,6 @@
 <?php
 
-function iterable_possibly_false(iterable $x, iterable $y = [], ?iterable $z = null, Traversable $w = null) {
+function iterable_possibly_false(iterable $x, iterable $y = [], ?iterable $z = null, ?Traversable $w = null) {
     if ($x) {  // should not emit RedundantCondition
         if (is_iterable($x)) {
             echo "Still an iterable\n";

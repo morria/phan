@@ -78,13 +78,13 @@ class CompletionItem
      * @param string|null     $insertText
      */
     public function __construct(
-        string $label = null,
-        int $kind = null,
-        string $detail = null,
-        string $documentation = null,
-        string $sortText = null,
-        string $filterText = null,
-        string $insertText = null
+        ?string $label = null,
+        ?int $kind = null,
+        ?string $detail = null,
+        ?string $documentation = null,
+        ?string $sortText = null,
+        ?string $filterText = null,
+        ?string $insertText = null
     ) {
         // @phan-suppress-next-line PhanPossiblyNullTypeMismatchProperty the '(at)var string' annotation is used by the RPC library
         $this->label = $label;

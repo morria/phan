@@ -1,11 +1,16 @@
 %s:4 PhanTypeMismatchDeclaredParamNullable Doc-block of $x in badNarrowing334 is phpdoc param type \DateTime which is not a permitted replacement of the nullable param type ?\DateTime declared in the signature ('?T' should be documented as 'T|null' or '?T')
 %s:5 PhanCommentParamWithoutRealParam Saw an @param annotation for $w, but it was not found in the param list of function badNarrowing334(?\DateTime $x = null);
+%s:7 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DateTime $x = null) have been deprecated in PHP 8.4
 %s:12 PhanTypeMismatchArgumentReal Argument 1 ($x) is 442 of type 442 but \badNarrowing334() takes ?\DateTime defined at %s:7
+%s:17 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $x = null) have been deprecated in PHP 8.4
 %s:20 PhanTypeMismatchArgumentProbablyReal Argument 1 ($x) is 42 of type 42 but \badNarrowingAsNull334() takes null (real type ?int) defined at %s:17 (the inferred real argument type has nothing in common with the parameter's phpdoc type)
 %s:22 PhanTypeMismatchArgument Argument 1 ($x) is '42' of type '42' but \badNarrowingAsNull334() takes null defined at %s:17
 %s:25 PhanTypeMismatchDeclaredParam Doc-block of $x in badNarrowingAsNullComposite334 contains phpdoc param type int which is incompatible with the param type ?string declared in the signature
 %s:26 PhanTypeMismatchDeclaredParam Doc-block of $y in badNarrowingAsNullComposite334 contains phpdoc param type ?int which is incompatible with the param type ?string declared in the signature
+%s:28 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (string $y = null) have been deprecated in PHP 8.4
 %s:32 PhanTypeMismatchArgument Argument 1 ($x) is 2 of type 2 but \badNarrowingAsNullComposite334() takes ?string defined at %s:28
 %s:32 PhanTypeMismatchArgument Argument 2 ($y) is 3 of type 3 but \badNarrowingAsNullComposite334() takes ?string defined at %s:28
 %s:35 PhanTypeMismatchDeclaredParam Doc-block of $x in badNarrowingAsNullComposite334B contains phpdoc param type int which is incompatible with the param type ?string declared in the signature
 %s:36 PhanTypeMismatchDeclaredParam Doc-block of $y in badNarrowingAsNullComposite334B contains phpdoc param type ?int which is incompatible with the param type ?string declared in the signature
+%s:38 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (string $y = null) have been deprecated in PHP 8.4
+%s:43 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DateTime $dt = null) have been deprecated in PHP 8.4

@@ -79,7 +79,7 @@ class ASTReverter
      *
      * @see https://github.com/nikic/PHP-Parser/tree/master/lib/PhpParser/PrettyPrinter/Standard.php
      */
-    public static function escapeInnerString(string $string, string $quote = null): string
+    public static function escapeInnerString(string $string, ?string $quote = null): string
     {
         if (null === $quote) {
             // For doc strings, don't escape newlines

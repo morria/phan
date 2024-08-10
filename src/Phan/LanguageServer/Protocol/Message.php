@@ -47,7 +47,7 @@ class Message
      * @param ?MessageBody $body
      * @param array<string,string> $headers
      */
-    public function __construct(MessageBody $body = null, array $headers = [])
+    public function __construct(?MessageBody $body = null, array $headers = [])
     {
         $this->body = $body;
         if (!isset($headers['Content-Type'])) {

@@ -1,3 +1,4 @@
+%s:22 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\ParentC $realParent = null) have been deprecated in PHP 8.4
 %s:55 PhanTypeMismatchArgumentReal Argument 1 ($realParent) is new stdClass() of type \stdClass but \SubC::setRealParentNoDoc() takes \ParentC defined at %s:27
 %s:57 PhanTypeMismatchArgumentReal Argument 1 ($realParent) is null of type null but \SubC::setRealParent() takes \ParentC defined at %s:13
 %s:60 PhanTypeMismatchArgumentReal Argument 1 ($realParent) is new stdClass() of type \stdClass but \SubC::setRealParent2() takes ?\ParentC defined at %s:22

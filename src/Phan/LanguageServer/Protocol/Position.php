@@ -29,7 +29,7 @@ class Position
     /**
      * @suppress PhanPossiblyNullTypeMismatchProperty
      */
-    public function __construct(int $line = null, int $character = null)
+    public function __construct(?int $line = null, ?int $character = null)
     {
         $this->line = $line;
         $this->character = $character;
