@@ -246,7 +246,7 @@ class Context extends FileRef
         string $alias,
         FullyQualifiedGlobalStructuralElement $target,
         int $lineno,
-        CodeBase $code_base = null
+        ?CodeBase $code_base = null
     ): Context {
         $original_alias = $alias;
         if ($flags !== \ast\flags\USE_CONST) {

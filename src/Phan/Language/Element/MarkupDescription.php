@@ -370,7 +370,7 @@ class MarkupDescription
      * @return string markup string
      * @internal
      */
-    public static function extractDocComment(string $doc_comment, int $comment_category = null, UnionType $element_type = null, bool $remove_type = false): string
+    public static function extractDocComment(string $doc_comment, ?int $comment_category = null, ?UnionType $element_type = null, bool $remove_type = false): string
     {
         // Trim the start and the end of the doc comment.
         //

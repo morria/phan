@@ -205,7 +205,7 @@ class Clazz extends AddressableElement
         UnionType $type,
         int $flags,
         FullyQualifiedClassName $fqsen,
-        Type $parent_type = null,
+        ?Type $parent_type = null,
         array $interface_fqsen_list = [],
         array $trait_fqsen_list = []
     ) {
@@ -1073,7 +1073,7 @@ class Clazz extends AddressableElement
         string $name,
         Context $context,
         bool $is_static,
-        Node $node = null,
+        ?Node $node = null,
         bool $is_known_assignment = false
     ): Property {
 

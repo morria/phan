@@ -18,7 +18,7 @@ final class MarkupDescriptionTest extends BaseTest
     /**
      * @dataProvider extractDocCommentProvider
      */
-    public function testExtractDocComment(string $expected, string $doc_comment, int $category = null): void
+    public function testExtractDocComment(string $expected, string $doc_comment, ?int $category = null): void
     {
         // @phan-suppress-next-line PhanAccessMethodInternal
         $this->assertSame($expected, MarkupDescription::extractDocComment($doc_comment, $category));

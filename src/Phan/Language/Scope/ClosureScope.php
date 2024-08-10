@@ -33,7 +33,7 @@ class ClosureScope extends FunctionLikeScope
     /**
      * Override the class FQSEN inside this closure's scope (with an (at)phan-closure-scope annotation).
      */
-    public function overrideClassFQSEN(FullyQualifiedClassName $fqsen = null): void
+    public function overrideClassFQSEN(?FullyQualifiedClassName $fqsen = null): void
     {
         // If there is an FQSEN override, then this is in a class scope.
         // If there is no override, then this inherits the class of the parent

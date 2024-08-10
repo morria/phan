@@ -43,7 +43,7 @@ class CtagsEntry
     /** @var bool is this entry valid */
     private $is_valid = false;
 
-    public function __construct(string $name, FileRef $context, string $kind, ?string $scope, string $fragment = null)
+    public function __construct(string $name, FileRef $context, string $kind, ?string $scope, ?string $fragment = null)
     {
         if ($context->isPHPInternal()) {
             return;

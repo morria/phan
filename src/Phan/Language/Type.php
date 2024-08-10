@@ -1338,7 +1338,7 @@ class Type implements Stringable
         string $string,
         Context $context,
         int $source,
-        CodeBase $code_base = null
+        ?CodeBase $code_base = null
     ): Type {
         if ($string === '') {
             throw new EmptyFQSENException("Type cannot be empty", '');
@@ -1655,7 +1655,7 @@ class Type implements Stringable
     /**
      * @throws IssueException (TODO: Catch, emit, and proceed?
      */
-    private static function maybeFindParentType(bool $is_nullable, Context $context, CodeBase $code_base = null): Type
+    private static function maybeFindParentType(bool $is_nullable, Context $context, ?CodeBase $code_base = null): Type
     {
         if ($code_base === null) {
             return NonNullMixedType::instance($is_nullable);
@@ -1707,7 +1707,7 @@ class Type implements Stringable
      * @param ?CodeBase $code_base for resolving 'parent'
      * @return array<string|int,UnionType> The types for the representations of types, in the given $context
      */
-    private static function shapeComponentStringsToTypes(array $shape_components, Context $context, int $source, CodeBase $code_base = null): array
+    private static function shapeComponentStringsToTypes(array $shape_components, Context $context, int $source, ?CodeBase $code_base = null): array
     {
         $result = [];
         foreach ($shape_components as $key => $component_string) {

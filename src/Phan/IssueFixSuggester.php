@@ -162,7 +162,7 @@ class IssueFixSuggester
         Context $context,
         FullyQualifiedClassName $class_fqsen,
         ?Closure $filter = null,
-        string $prefix = null,
+        ?string $prefix = null,
         int $class_suggest_type = self::CLASS_SUGGEST_ONLY_CLASSES
     ): ?Suggestion {
         if (!is_string($prefix) || $prefix === '') {

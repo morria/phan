@@ -1147,7 +1147,7 @@ trait FunctionTrait
      * @param list<Node|int|string|float> $args
      * @param ?Node $node - the node causing the call. This may be dynamic, e.g. call_user_func_array. This will be required in Phan 3.
      */
-    public function analyzeFunctionCall(CodeBase $code_base, Context $context, array $args, Node $node = null): void
+    public function analyzeFunctionCall(CodeBase $code_base, Context $context, array $args, ?Node $node = null): void
     {
         // @phan-suppress-next-line PhanTypePossiblyInvalidCallable, PhanTypeMismatchArgument - Callers should check hasFunctionCallAnalyzer
         ($this->function_call_analyzer_callback)($code_base, $context, $this, $args, $node);
@@ -1171,7 +1171,7 @@ trait FunctionTrait
      * Make additional analysis logic of this function/method use $closure in addition to any other closures.
      * @param ?PluginV3 $plugin @phan-mandatory-param
      */
-    public function addFunctionCallAnalyzer(Closure $closure, PluginV3 $plugin = null): void
+    public function addFunctionCallAnalyzer(Closure $closure, ?PluginV3 $plugin = null): void
     {
         $closure_id = spl_object_id($plugin ?? $closure);
         if (isset($this->function_call_analyzer_callback_set[$closure_id])) {
@@ -1660,7 +1660,7 @@ trait FunctionTrait
      *
      * @return ?Closure(list<Node|string|int|float|UnionType>, Context):UnionType
      */
-    public function getTemplateTypeExtractorClosure(CodeBase $code_base, TemplateType $template_type, int $skip_index = null): ?Closure
+    public function getTemplateTypeExtractorClosure(CodeBase $code_base, TemplateType $template_type, ?int $skip_index = null): ?Closure
     {
         $closure = null;
         foreach ($this->parameter_list as $i => $parameter) {

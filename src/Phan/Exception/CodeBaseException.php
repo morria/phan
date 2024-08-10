@@ -24,7 +24,7 @@ class CodeBaseException extends \Exception
      * The error message
      */
     public function __construct(
-        FQSEN $missing_fqsen = null,
+        ?FQSEN $missing_fqsen = null,
         string $message = ""
     ) {
         parent::__construct($message);

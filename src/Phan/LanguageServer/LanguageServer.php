@@ -548,7 +548,7 @@ class LanguageServer extends AdvancedJsonRpc\Dispatcher
     public function awaitCompletion(
         string $uri,
         Position $position,
-        CompletionContext $completion_context = null
+        ?CompletionContext $completion_context = null
     ): Promise {
         // TODO: Add a way to "go to definition" without emitting analysis results as a side effect
         $path_to_analyze = Utils::uriToPath($uri);
@@ -974,7 +974,7 @@ class LanguageServer extends AdvancedJsonRpc\Dispatcher
      *
      * @return Promise <InitializeResult>
      */
-    public function initialize(ClientCapabilities $capabilities, string $rootPath = null, int $processId = null): Promise
+    public function initialize(ClientCapabilities $capabilities, ?string $rootPath = null, ?int $processId = null): Promise
     {
         return coroutine(function (): \Generator {
             // Eventually, this might block on something. Leave it as a generator.

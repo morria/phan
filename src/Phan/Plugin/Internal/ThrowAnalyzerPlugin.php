@@ -198,7 +198,7 @@ class ThrowVisitor extends PluginAwarePostAnalysisVisitor
         Node $node,
         FunctionInterface $analyzed_function,
         UnionType $union_type,
-        FunctionInterface $call = null
+        ?FunctionInterface $call = null
     ): void {
         if ($union_type->isEmpty()) {
             return;

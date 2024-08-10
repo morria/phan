@@ -70,7 +70,7 @@ class Analysis
      * @param ?Request $request probably a \Phan\Daemon\ParseRequest during language server mode.
      * @throws InvalidArgumentException for invalid stub files
      */
-    public static function parseFile(CodeBase $code_base, string $file_path, bool $suppress_parse_errors = false, string $override_contents = null, bool $is_php_internal_stub = false, ?Request $request = null): Context
+    public static function parseFile(CodeBase $code_base, string $file_path, bool $suppress_parse_errors = false, ?string $override_contents = null, bool $is_php_internal_stub = false, ?Request $request = null): Context
     {
         $original_file_path = $file_path;
         $code_base->setCurrentParsedFile($file_path);
@@ -242,7 +242,7 @@ class Analysis
      *
      * @param ?array<string,mixed> $file_filter if non-null, limit analysis to functions and methods declared in this array
      */
-    public static function analyzeFunctions(CodeBase $code_base, array $file_filter = null): void
+    public static function analyzeFunctions(CodeBase $code_base, ?array $file_filter = null): void
     {
         $plugin_set = ConfigPluginSet::instance();
         $has_function_or_method_plugins = $plugin_set->hasAnalyzeFunctionPlugins() || $plugin_set->hasAnalyzeMethodPlugins();
@@ -463,7 +463,7 @@ class Analysis
      *
      * @param ?array<string,mixed> $path_filter if non-null, limit analysis to classes in this array
      */
-    public static function analyzeClasses(CodeBase $code_base, array $path_filter = null): void
+    public static function analyzeClasses(CodeBase $code_base, ?array $path_filter = null): void
     {
         CLI::progress('classes', 0.0, null);
         $classes = $code_base->getUserDefinedClassMap();
@@ -528,7 +528,7 @@ class Analysis
         CodeBase $code_base,
         string $file_path,
         ?Request $request,
-        string $override_contents = null
+        ?string $override_contents = null
     ): Context {
         // Set the file on the context
         $context = (new Context())->withFile($file_path);

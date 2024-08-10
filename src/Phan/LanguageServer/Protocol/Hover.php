@@ -22,7 +22,7 @@ class Hover
      */
     public $range;
 
-    public function __construct(MarkupContent $contents, Range $range = null)
+    public function __construct(MarkupContent $contents, ?Range $range = null)
     {
         $this->contents = $contents;
         $this->range = $range;

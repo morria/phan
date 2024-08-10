@@ -287,7 +287,7 @@ class GenericArrayType extends ArrayType implements GenericArrayInterface
      * @return UnionType returns the array value's union type
      * @phan-override
      */
-    public function iterableValueUnionType(CodeBase $code_base = null): UnionType
+    public function iterableValueUnionType(?CodeBase $code_base = null): UnionType
     {
         return $this->element_type->asPHPDocUnionType();
     }

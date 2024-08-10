@@ -44,8 +44,8 @@ class PassByReferenceVariable extends Variable
     public function __construct(
         Variable $parameter,
         $element,
-        CodeBase $code_base = null,
-        Context $context_of_created_reference = null
+        ?CodeBase $code_base = null,
+        ?Context $context_of_created_reference = null
     ) {
         $this->parameter = $parameter;
         $this->element = $element;

@@ -685,7 +685,7 @@ final class ConfigPluginSet extends PluginV3 implements
      * @param ?Closure(CodeBase, Context, FunctionInterface, list<Node|int|string|float>, ?Node):void $b
      * @return Closure(CodeBase, Context, FunctionInterface, list<Node|int|string|float>, ?Node):void $b
      */
-    public static function mergeAnalyzeFunctionCallClosures(Closure $a, Closure $b = null): Closure
+    public static function mergeAnalyzeFunctionCallClosures(Closure $a, ?Closure $b = null): Closure
     {
         if (!$b) {
             return $a;

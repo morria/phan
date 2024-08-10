@@ -93,7 +93,7 @@ final class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
      * @param ?Closure(ast\Node):void $handle_selected_node this can be passed in.
      *                      If a node corresponding to a reference was found, then this closure will be invoked once with that node.
      */
-    public function __construct(int $desired_byte_offset, Closure $handle_selected_node = null)
+    public function __construct(int $desired_byte_offset, ?Closure $handle_selected_node = null)
     {
         $this->instance_desired_byte_offset = $desired_byte_offset;
         $this->instance_handle_selected_node = $handle_selected_node;
@@ -105,7 +105,7 @@ final class TolerantASTConverterWithNodeMapping extends TolerantASTConverter
      * @throws InvalidArgumentException for invalid $version
      * @throws Throwable (after logging) if anything is thrown by the parser
      */
-    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], Cache $cache = null): \ast\Node
+    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], ?Cache $cache = null): \ast\Node
     {
         // Force the byte offset to be within the
         $byte_offset = \max(0, \min(\strlen($file_contents), $this->instance_desired_byte_offset));

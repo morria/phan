@@ -18,7 +18,7 @@ final class ASTReverterTest extends BaseTest
      * @param string $snippet
      * @dataProvider revertShorthandProvider
      */
-    public function testRevertShorthand(string $snippet, string $expected = null): void
+    public function testRevertShorthand(string $snippet, ?string $expected = null): void
     {
         $expected = $expected ?? $snippet;
         $file_contents = '<' . '?php ' . $snippet . ';';

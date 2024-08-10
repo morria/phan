@@ -119,7 +119,7 @@ class TextDocument
      * @param string|null $text (NOTE: can't use ?T here)
      * @suppress PhanUnreferencedPublicMethod called by client via AdvancedJsonRpc
      */
-    public function didSave(TextDocumentIdentifier $textDocument, string $text = null): void
+    public function didSave(TextDocumentIdentifier $textDocument, ?string $text = null): void
     {
         Logger::logInfo("Called textDocument/didSave, uri={$textDocument->uri} len(text)=" . \strlen($text ?? ''));
         try {
@@ -258,7 +258,7 @@ class TextDocument
      * @suppress PhanUnreferencedPublicMethod called by client via AdvancedJsonRpc
      * @return ?Promise <CompletionItem[]|CompletionList>
      */
-    public function completion(TextDocumentIdentifier $textDocument, Position $position, CompletionContext $context = null): ?Promise
+    public function completion(TextDocumentIdentifier $textDocument, Position $position, ?CompletionContext $context = null): ?Promise
     {
         if (!Config::getValue('language_server_enable_completion')) {
             // Placeholder to avoid a performance degradation on clients

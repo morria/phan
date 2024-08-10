@@ -268,7 +268,7 @@ if (!\class_exists('\ast\Node')) {
          * For backwards compatibility reasons, all values are optional and properties default to null
          * @suppress PhanPossiblyNullTypeMismatchProperty
          */
-        public function __construct(int $kind = null, int $flags = null, array $children = null, int $lineno = null)
+        public function __construct(?int $kind = null, ?int $flags = null, ?array $children = null, ?int $lineno = null)
         {
             $this->kind = $kind;
             $this->flags = $flags;
