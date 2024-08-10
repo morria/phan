@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Phan\Plugin\Internal\IssueFixingPlugin;
 
 use Closure;
+use Microsoft\PhpParser\Node\DelimitedList\QualifiedNameList;
 use Microsoft\PhpParser\Node\NamespaceUseClause;
 use Microsoft\PhpParser\Node\QualifiedName;
+use Microsoft\PhpParser\Node\Parameter;
 use Microsoft\PhpParser\Node\Statement\NamespaceUseDeclaration;
+use Microsoft\PhpParser\Token;
 use Microsoft\PhpParser\TokenKind;
 use Phan\AST\TolerantASTConverter\NodeUtils;
 use Phan\CodeBase;
@@ -88,6 +91,43 @@ class IssueFixer
         return true;
     }
 
+    private static function maybeAddNullableToParam(
+        string $file_contents,
+        Parameter $param,
+        IssueInstance $issue_instance
+    ): ?FileEdit {
+        if ($param->questionToken !== null) {
+            self::debug(\sprintf("maybeAddNullableToParam: already nullable %s for %s\n", $param->getText(), (string)$issue_instance));
+            return null;
+        }
+        if ($param->default === null) {
+            self::debug(\sprintf("maybeAddNullableToParam: %s does not have a default so this cannot be implicitly nullable %s\n", $param->getText(), (string)$issue_instance));
+            return null;
+        }
+
+        // Both of these start with '$'
+        $variable_name = $param->variableName;
+        $variable_name_text = $variable_name instanceof Token ? $variable_name->getText($file_contents) : null;
+        $param_name = $issue_instance->getTemplateParameters()[1];
+        if ($variable_name_text !== $param_name) {
+            self::debug(\sprintf("maybeAddNullableToParam: variable_name mismatch for %s: %s != %s\n", (string)$issue_instance, \var_export($variable_name_text, true), \var_export($param_name, true)));
+            return null;
+        }
+        $typeDeclarationList = $param->typeDeclarationList;
+        if (!$typeDeclarationList instanceof QualifiedNameList) {
+            self::debug(\sprintf("maybeAddNullableToParam: got %s instead of QualifiedNameList for %s\n", \get_debug_type($typeDeclarationList), (string)$issue_instance));
+            return null;
+        }
+        if (\count($typeDeclarationList->children) === 1) {
+            $position = $typeDeclarationList->children[0]->getStartPosition();
+            // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+            return new FileEdit($position, $position, '?');
+        }
+        // TODO optionally add automatic fix for "null|" for null|A|B for union types containing TokenKind::BarToken
+        self::debug(\sprintf("unsupported number of type declarations %d for %s\n", \count($typeDeclarationList->children), (string)$issue_instance));
+        return null;
+    }
+
     private static function maybeRemoveNamespaceUseDeclaration(
         string $file_contents,
         NamespaceUseDeclaration $declaration,
@@ -157,6 +197,7 @@ class IssueFixer
                     if ($edit) {
                         $edits[] = $edit;
                     }
+                    // This assumes a coding style of one namespace use per line.
                     break;
                 }
             }
@@ -165,10 +206,35 @@ class IssueFixer
             }
             return null;
         };
+        $handle_deprecated_implicit_nullable = static function (
+            CodeBase $unused_code_base,
+            FileCacheEntry $file_contents,
+            IssueInstance $issue_instance
+        ): ?FileEditSet {
+            // 1-based line
+            $line = $issue_instance->getLine();
+            $edits = [];
+            foreach ($file_contents->getNodesAtLine($line) as $candidate_node) {
+                self::debug(\sprintf("Handling %s for %s\n", \get_class($candidate_node), (string)$issue_instance));
+                if ($candidate_node instanceof Parameter) {
+                    $edit = self::maybeAddNullableToParam($file_contents->getContents(), $candidate_node, $issue_instance);
+                    if ($edit) {
+                        $edits[] = $edit;
+                        break;
+                    }
+                }
+            }
+            if ($edits) {
+                return new FileEditSet($edits);
+            }
+            return null;
+        };
+
         return \array_merge(self::$fixer_closures, [
             Issue::UnreferencedUseNormal => $handle_unreferenced_use,
             Issue::UnreferencedUseConstant => $handle_unreferenced_use,
             Issue::UnreferencedUseFunction => $handle_unreferenced_use,
+            Issue::DeprecatedImplicitNullableParam => $handle_deprecated_implicit_nullable,
         ]);
     }
 

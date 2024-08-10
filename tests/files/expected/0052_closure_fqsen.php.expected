@@ -1,0 +1,1 @@
+%s:2 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (callable $callback = null) have been deprecated in PHP 8.4

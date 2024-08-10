@@ -1,5 +1,7 @@
 %s:16 PhanTypeMismatchDefault Default value for int $b can't be false
 %s:16 PhanTypeMismatchDefault Default value for string $c can't be int
 %s:21 PhanTypeMismatchDeclaredParamNullable Doc-block of $categories in fromCategories is phpdoc param type \A which is not a permitted replacement of the nullable param type ?\A declared in the signature ('?T' should be documented as 'T|null' or '?T')
+%s:26 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\A $categories = null) have been deprecated in PHP 8.4
 %s:26 PhanParamReqAfterOpt Required parameter (\A $context) follows optional (?\A $categories = null)
+%s:35 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\A $categories = null) have been deprecated in PHP 8.4
 %s:35 PhanParamReqAfterOpt Required parameter (\A $context) follows optional (\A|null $categories = null)

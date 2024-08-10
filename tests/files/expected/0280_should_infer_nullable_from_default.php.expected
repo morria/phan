@@ -1,4 +1,7 @@
 %s:9 PhanCompatibleDefaultEqualsNull In PHP 8.0, using a default (self::NULLCONST) that resolves to null will no longer cause the parameter (int $arg) to be nullable
+%s:10 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $arg = null) have been deprecated in PHP 8.4
+%s:15 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $arg = null) have been deprecated in PHP 8.4
+%s:21 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $arg = null) have been deprecated in PHP 8.4
 %s:23 PhanParamSignatureMismatch Declaration of function foo(int $arg = 20) should be compatible with function foo(?int $arg = null) defined in %s:10 (Expected int $arg = 20 to have the same type as ?int $arg = null or a supertype)
 %s:23 PhanParamSignatureRealMismatchParamType Declaration of function foo(int $arg = 20) should be compatible with function foo(?int $arg = null) (parameter #1 of real signature type 'int' cannot replace original parameter of real signature type '?int') defined in %s:10
 %s:27 PhanTypeMismatchDefault Default value for ?int $x can't be float

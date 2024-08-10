@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 function noargs() {}
 
-function test_named_arg(int $a, stdClass $other = null, bool $flag = false) {
+function test_named_arg(int $a, ?stdClass $other = null, bool $flag = false) {
     '@phan-debug-var $a, $other, $flag';
 }
 

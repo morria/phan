@@ -7,7 +7,7 @@ function example3(float ...$values) : int {
     return $values;
 }
 example3(2.0, foo: 1.0);
-function example3b(array $values = null) : int {
+function example3b(?array $values = null) : int {
     if (array_is_list($values)) {  // this line will throw for null so the negation is non-empty-associative-array
         return $values;
     }

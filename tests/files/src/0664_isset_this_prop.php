@@ -4,7 +4,7 @@ class Example664 {
     /** @var ?string */
     public $x;
 
-    public function __construct(string $v = null) {
+    public function __construct(?string $v = null) {
         $this->x = $v;
     }
 
