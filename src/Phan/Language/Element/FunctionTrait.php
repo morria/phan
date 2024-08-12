@@ -351,7 +351,7 @@ trait FunctionTrait
      * 2) The setting `allow_overriding_vague_return_types` is enabled and the method had a vague enough return
      *      type that Phan would add types to it (return type is inferred from the method signature
      *      itself and the docblock).
-     * 3) The setting `override_return_types` is enabled
+     * 3) The setting `override_return_types` is enabled and the method has no hardcoded or dependent return type.
      */
     public function isReturnTypeModifiable(): bool
     {
