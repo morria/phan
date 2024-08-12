@@ -1,1 +1,2 @@
-
+%s:20 PhanCommentObjectInClassConstantType Impossible phpdoc declaration that a class constant \C26::NOT_VALID has a type \B26 containing objects. This type is ignored during analysis.
+%s:23 PhanCommentObjectInClassConstantType Impossible phpdoc declaration that a class constant \C26::ALSO_NOT_VALID has a type \B26 containing objects. This type is ignored during analysis.

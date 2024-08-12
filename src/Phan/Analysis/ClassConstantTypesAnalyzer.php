@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Phan\Analysis;
 
 use Phan\CodeBase;
+use Phan\Config;
 use Phan\Exception\IssueException;
 use Phan\Issue;
 use Phan\IssueFixSuggester;
@@ -58,7 +59,9 @@ class ClassConstantTypesAnalyzer
                 foreach ($union_type->withFlattenedArrayShapeOrLiteralTypeInstances()->getTypeSet() as $outer_type) {
                     $has_object = $outer_type->isObject() && ! self::typeIsEnum( $code_base, $outer_type );
                     foreach ($outer_type->getReferencedClasses() as $type) {
-                        $has_object = ! self::typeIsEnum( $code_base, $type );
+                        if ( ! self::typeIsEnum( $code_base, $type ) ) {
+                            $has_object = true;
+                        }
                         // If it's a reference to self, it's OK
                         if ($type->isSelfType()) {
                             continue;
@@ -109,6 +112,10 @@ class ClassConstantTypesAnalyzer
 
 
     private static function typeIsEnum( CodeBase $code_base, Type $type ) : bool {
+        if ( Config::get_closest_minimum_target_php_version_id() < 80100) {
+            // Enums were introduced in 8.1.
+            return false;
+        }
         if ( ! $type->isObject() ) {
             return false;
         }
