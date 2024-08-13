@@ -1,7 +1,28 @@
 Phan NEWS
 
-??? ?? 202?, Phan 5.4.5 (dev)
+Aug 13 2024, Phan 5.4.5
 -----------------------
+New features(Analysis):
+- Emit `PhanDeprecatedImplicitNullableParam` for uses of [implicitly nullable](https://wiki.php.net/rfc/deprecate-implicitly-nullable-types) parameters (`int $x = null` instead of `?int $x = null`). These can be fixed automatically via the accompanying [IssueFixer](https://github.com/phan/phan/pull/4875/commits/8e22228cae7dcea529eb3c58cbd2b63832bf7595#diff-c4e601780333523f24a0d1d62084b5dabaf37126e7673183c153f36810feb217). [#4875](https://github.com/phan/phan/pull/4875)
+
+New features(CLI, Configs):
+- Add `override_return_types` to add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
+  or real return type signature. This setting can be disabled on individual methods by adding
+  `@phan-hardcode-return-type` to the doc comment.
+
+  Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
+  detect more callsite possibilities. See the [PR description](https://github.com/phan/phan/pull/4874) where
+  this setting was added for more details.
+
+  (Default: `false`)
+
+  Along with this change, we are analyzing the return types of traits a bit more aggressively now. [#4874](https://github.com/phan/phan/pull/4874)
+
+Bug fixes:
+- Fix crash in PHP 8.4 due to deprecation warning about implicitly nullable parameters [#4875](https://github.com/phan/phan/pull/4875)
+
+Maintenance:
+- Update download links for php-ast zip files [#4876](https://github.com/phan/phan/pull/4876)
 
 Jul 25 2024, Phan 5.4.4
 -----------------------
