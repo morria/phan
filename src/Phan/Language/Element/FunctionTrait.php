@@ -346,15 +346,32 @@ trait FunctionTrait
 
     /**
      * @return bool
-     * True if this method had no return type defined when it was defined,
-     * or if the method had a vague enough return type that Phan would add types to it
-     * (return type is inferred from the method signature itself and the docblock).
+     * True if any of the following are true:
+     * 1) This method had no return type defined when it was defined
+     * 2) The setting `allow_overriding_vague_return_types` is enabled and the method had a vague enough return
+     *      type that Phan would add types to it (return type is inferred from the method signature
+     *      itself and the docblock).
+     * 3) The setting `override_return_types` is enabled and the method has no hardcoded or dependent return type.
      */
     public function isReturnTypeModifiable(): bool
     {
         if ($this->isReturnTypeUndefined()) {
             return true;
         }
+
+        $has_hardcoded_return_type = (bool) ($this->getPhanFlags() & Flags::HARDCODED_RETURN_TYPE);
+
+        if (Config::getValue('override_return_types')) {
+            if ($has_hardcoded_return_type || $this->hasDependentReturnType()) {
+                // If the return type is hardcoded or we have a plugin that's inferring the return
+                // type based on method params, assume that those will do a better job of
+                // determining what the return type should actually be.
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         if (!Config::getValue('allow_overriding_vague_return_types')) {
             return false;
         }
@@ -362,7 +379,7 @@ trait FunctionTrait
         if ($this instanceof Method && $this->isOverriddenByAnother()) {
             return false;
         }
-        if ($this->getPhanFlags() & Flags::HARDCODED_RETURN_TYPE) {
+        if ($has_hardcoded_return_type) {
             return false;
         }
         $return_type = $this->getUnionType();

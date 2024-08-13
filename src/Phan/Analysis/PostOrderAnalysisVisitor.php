@@ -1635,13 +1635,11 @@ class PostOrderAnalysisVisitor extends AnalysisVisitor
             if ($method_return_type->isEmpty()
                 || $method->isReturnTypeUndefined()
             ) {
-                if (!$is_trait) {
-                    $method->setIsReturnTypeUndefined(true);
+                $method->setIsReturnTypeUndefined(true);
 
-                    // Set the inferred type of the method based
-                    // on what we're returning
-                    $method->setUnionType($method->getUnionType()->withUnionType($expression_type));
-                }
+                // Set the inferred type of the method based
+                // on what we're returning
+                $method->setUnionType($method->getUnionType()->withUnionType($expression_type));
 
                 // No point in comparing this type to the
                 // type we just set
@@ -1661,10 +1659,15 @@ class PostOrderAnalysisVisitor extends AnalysisVisitor
                     $is_mismatch = self::analyzeReturnStrict($code_base, $method, $resolved_expression_type, $method_return_type, $lineno, $inner_node);
                 }
             }
+
             // For functions that aren't syntactically Generators,
             // update the set/existence of return values.
-
-            if ($method->isReturnTypeModifiable() && !$is_mismatch) {
+            //
+            // If `override_return_types` is enabled, update the return value even if it doesn't
+            // match the method's declared return value. One reason for this approach is because
+            // phpdoc return values may be incorrect or out of date, and phan errors about the
+            // incorrect phpdoc  return values may be suppressed.
+            if ($method->isReturnTypeModifiable() && (!$is_mismatch || Config::getValue('override_return_types'))) {
                 // Add the new type to the set of values returned by the
                 // method
                 $method->setUnionType($method->getUnionType()->withUnionType($expression_type));

@@ -18,4 +18,13 @@ return [
     'plugin_config' => [
         'phound_sqlite_path' => $_SERVER['HOME'] . '/phound.db',
     ],
+
+    // Add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
+    // or real return type signature. This setting can be disabled on individual methods by adding
+    // `@phan-hardcode-return-type` to the doc comment.
+    //
+    // Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
+    // detect more callsite possibilities. See the [PR description](https://github.com/phan/phan/pull/4874) where
+    // this setting was added for more details.
+    'override_return_types' => true,
 ];
