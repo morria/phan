@@ -1047,7 +1047,7 @@ final class EmptyUnionType extends UnionType
      * @return UnionType
      * The subset of types in this
      */
-    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base): UnionType
+    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base, bool $include_array_shape_types = true): UnionType
     {
         return $this; // empty
     }

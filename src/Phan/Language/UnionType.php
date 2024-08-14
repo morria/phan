@@ -4059,7 +4059,7 @@ class UnionType implements Serializable, Stringable
      * @param bool $add_real_types if true, this adds the real types that would be possible for `$x[$offset]`
      * @suppress PhanStaticClassAccessWithStaticVariable static variables are safely initialized
      */
-    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base): UnionType
+    public function genericArrayElementTypes(bool $add_real_types, CodeBase $code_base, bool $include_array_shape_types = true): UnionType
     {
         // This is frequently called, and has been optimized
         $result = [];
@@ -4069,6 +4069,10 @@ class UnionType implements Serializable, Stringable
                 if ($type instanceof GenericArrayType) {
                     $result[] = $type->genericArrayElementType();
                 } else {
+                    // It's a shaped array (TODO: confirm)
+                    if (!$include_array_shape_types) {
+                        continue;
+                    }
                     foreach ($type->genericArrayElementUnionType()->getTypeSet() as $inner_type) {
                         $result[] = $inner_type;
                     }
@@ -4148,12 +4152,29 @@ class UnionType implements Serializable, Stringable
     }
 
     /**
+     * Returns the UnionType for of an element of the LHS in a destructuring assignment such as:
+     * `[$a, $b] = expr`
+     *
+     * This only handles the generic arrays that the RHS consists of. This will not handle
+     * the array shape types of the RHS.
+     *
+     * @param  UnionType $right_type
+     * @param  CodeBase  $code_base
+     */
+    public static function getTypeForGenericArrayDestructuringAccess(UnionType $right_type, CodeBase $code_base): UnionType {
+        return $right_type->genericArrayElementTypes(false, $code_base, false)
+            ->withRealTypeSet(
+                self::computeRealElementTypesForDestructuringAccess($right_type->getRealTypeSet(), $code_base)
+            );
+    }
+
+    /**
      * Returns the real types seen for an array destructuring expression such as `[$x] = expr`
      * @param non-empty-list<Type> $real_type_set the set of types of expr
      * @return list<Type> possibly empty, possibly with duplicates. These types are nullable to indicate that array accesses can fail.
      * @internal
      */
-    public static function computeRealElementTypesForDestructuringAccess(array $real_type_set, CodeBase $code_base): array
+    private static function computeRealElementTypesForDestructuringAccess(array $real_type_set, CodeBase $code_base): array
     {
         $result = [];
         foreach ($real_type_set as $type) {
@@ -4175,6 +4196,9 @@ class UnionType implements Serializable, Stringable
             }
             if (!$type instanceof ArrayType) {
                 return [];
+            }
+            if ($type instanceof ArrayShapeType) {
+                continue;
             }
             $new_types = $type->genericArrayElementUnionType()->getTypeSet();
             if (!$new_types) {
