@@ -1,7 +1,10 @@
 <?php
 /**
  * @template TClassName
- * @param array{class:class-string<TClassName>,args:array<int,mixed>} $params
+ * @param array{
+ *     class: class-string<TClassName>,
+ *     args: array<int, mixed>,
+ * } $params
  * @return TClassName
  */
 function class_instance_factory(array $params) {

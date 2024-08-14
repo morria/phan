@@ -1,2 +1,2 @@
-%s:13 PhanUndeclaredMethod Call to undeclared method \stdClass::method
-%s:24 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($string) is swap_pair([rand(0, 5),new stdClass()]) of type array{0:\stdClass,1:int} (real type array) but \strlen() takes string
+%s:16 PhanUndeclaredMethod Call to undeclared method \stdClass::method
+%s:27 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($string) is swap_pair([rand(0, 5),new stdClass()]) of type array{0:\stdClass,1:int} (real type array) but \strlen() takes string

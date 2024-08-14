@@ -99,7 +99,7 @@ final class Builder
         bool $did_add_template_types = false
     ) {
         $this->comment = $comment;
-        $this->lines = \explode("\n", $comment);
+        $this->lines = \explode("\n", self::reduceMultiline($comment));
         $this->comment_lines_count = \count($this->lines);
         $this->code_base = $code_base;
         $this->context = $context;
@@ -330,7 +330,7 @@ final class Builder
             // > A tag always starts on a new line with an at-sign (@) followed by the name of the tag.
             // > Between the start of the line and the tag’s name (including at-sign) there may be one or more spaces or tabs.
             $line = \trim($line);
-            $trimmed = \preg_replace('/^\/?[\*\s]+/', '', $line);
+            $trimmed = \preg_replace('/^\/?[*\s]+/', '', $line);
             if (($trimmed[0] ?? '') !== '@') {
                 continue;
             }
@@ -1595,5 +1595,63 @@ final class Builder
             );
         }
         $this->issues = [];
+    }
+
+    private static function reduceMultiline(string $comment): string
+    {
+        return implode('@', array_map(
+            static function (string $annotation): string {
+                // Not an annotation where we care about multiline
+                if (
+                    strpos($annotation, "\n") === false ||
+                    !preg_match('/^((?:param|var|return)\s[^$\n]+[\[(<{])\n/', $annotation, $match)
+                ) {
+                    return $annotation;
+                }
+
+                $buffer = $match[1];
+                $remaining = (string)substr($annotation, \strlen($match[0]));
+                $level = 1;
+
+                while ($remaining !== '') {
+                    // No more symbol
+                    if (!preg_match('/^[^\[(<{\])>}]*([\[(<{\])>}])/', $remaining, $match)) {
+                        $buffer .= $remaining;
+
+                        break;
+                    }
+
+                    // Opening symbol
+                    if (\in_array($match[1], ['{', '<', '[', '('], true)) {
+                        $level++;
+                        $buffer .= $level
+                            ? ltrim(preg_replace('/\n\s+\*\s+/', ' ', "\n" . $match[0]))
+                            : $match[0];
+                        $remaining = (string)substr($remaining, \strlen($match[0]));
+
+                        continue;
+                    }
+
+                    // Closing symbol
+                    if ((--$level) < 0) {
+                        // Must not have more closing symbols than opening symbols
+                        return $annotation;
+                    }
+
+                    $inner = (string)substr($match[0], 0, -1);
+                    $inner = rtrim(preg_replace('/\n\s+\*\s+/', ' ', "\n" . $inner), "\n ,");
+                    $buffer .= ltrim($inner) . $match[1];
+                    $remaining = (string)substr($remaining, \strlen($match[0]));
+                }
+
+                if ($level !== 0) {
+                    // Must not have more opening symbols than closing symbols
+                    return $annotation;
+                }
+
+                return $buffer;
+            },
+            explode('@', str_replace("\r", '', $comment))
+        ));
     }
 }
