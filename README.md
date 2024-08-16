@@ -76,7 +76,8 @@ Phan is able to perform the following kinds of analysis:
 * Supports analysis of closures and return types passed to `array_map`, `array_filter`, and other internal array functions.
 * Offers extensive configuration for weakening the analysis to make it useful on large sloppy code bases
 * Can be run on many cores. (requires `pcntl`)
-* Output is emitted in text, checkstyle, json, pylint, csv, or codeclimate formats.
+* Output can be emitted in Checkstyle, CodeClimate, CSV, Gitlab, HTML, JSON,
+  Pylint, text (default) or text verbose formats.
 * Can run [user plugins on source for checks specific to your code](https://github.com/phan/phan/wiki/Writing-Plugins-for-Phan).
   [Phan includes various plugins you may wish to enable for your project](https://github.com/phan/phan/tree/v5/.phan/plugins#2-general-use-plugins).
 

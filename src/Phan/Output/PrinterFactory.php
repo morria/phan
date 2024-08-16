@@ -7,6 +7,7 @@ namespace Phan\Output;
 use Phan\Output\Printer\CheckstylePrinter;
 use Phan\Output\Printer\CodeClimatePrinter;
 use Phan\Output\Printer\CSVPrinter;
+use Phan\Output\Printer\GitlabPrinter;
 use Phan\Output\Printer\HTMLPrinter;
 use Phan\Output\Printer\JSONPrinter;
 use Phan\Output\Printer\PlainTextPrinter;
@@ -26,7 +27,17 @@ class PrinterFactory
      */
     public function getTypes(): array
     {
-        return ['text', 'verbose', 'json', 'csv', 'codeclimate', 'checkstyle', 'pylint', 'html'];
+        return [
+            'checkstyle',
+            'codeclimate',
+            'csv',
+            'gitlab',
+            'html',
+            'json',
+            'pylint',
+            'text',
+            'verbose',
+        ];
     }
 
     /**
@@ -36,28 +47,30 @@ class PrinterFactory
     public function getPrinter(?string $type, OutputInterface $output): IssuePrinterInterface
     {
         switch ($type) {
-            case 'codeclimate':
-                $printer = new CodeClimatePrinter();
-                break;
-            case 'json':
-                $printer = new JSONPrinter();
-                break;
             case 'checkstyle':
                 $printer = new CheckstylePrinter();
+                break;
+            case 'codeclimate':
+                $printer = new CodeClimatePrinter();
                 break;
             case 'csv':
                 $printer = new CSVPrinter();
                 break;
-            case 'pylint':
-                $printer = new PylintPrinter();
+            case 'gitlab':
+                $printer = new GitlabPrinter();
                 break;
             case 'html':
                 $printer = new HTMLPrinter();
                 break;
+            case 'json':
+                $printer = new JSONPrinter();
+                break;
+            case 'pylint':
+                $printer = new PylintPrinter();
+                break;
             case 'verbose':
                 $printer = new VerbosePlainTextPrinter();
                 break;
-            case 'text':
             default:
                 $printer = new PlainTextPrinter();
                 break;

@@ -27,7 +27,7 @@ _arguments \
 	'(--project-root-directory -d)*'{--project-root-directory=,-d+}'[the directory of the project to analyze]:dir:_directories' \
 	'(--file-list-only -r)'{-r,--file-list-only}'[a list of php files to be analyzed instead of anything else]:file:_files' \
 	'(--config-file -k)'{--config-file=,-k+}'[a path to a config file to load]:file:_files' \
-	'(--output-mode -m)'{--output-mode=,-m+}'[the output mode]:output mode:(text verbose json csv codeclimate checkstyle pylint html)' \
+	'(--output-mode -m)'{--output-mode=,-m+}'[the output mode]:output mode:(text verbose checkstyle codeclimate csv gitlab html json pylint)' \
 	'(--output -o)'{--output=,-o+}'[output filename]:output file:_files' \
 	'(--init)--init[generates a .phan/config.php file in the current directory]' \
 	'(--init-level)--init-level=[a number from 1(strictest) to 5(least strict)]:level:(1 2 3 4 5)' \
