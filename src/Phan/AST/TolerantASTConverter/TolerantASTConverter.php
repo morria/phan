@@ -3487,6 +3487,11 @@ class TolerantASTConverter
         if (\strpos(\PHP_VERSION, '-dev') === false) {
             return null;
         }
+
+        if (\defined('PHP_BUILD_DATE')) {
+            return \PHP_BUILD_DATE;;
+        }
+
         \ob_start();
         \phpinfo(\INFO_GENERAL);
         $contents = (string)\ob_get_clean();
