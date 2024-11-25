@@ -1,0 +1,7 @@
+- id: phan
+  name: phan
+  description: runs the Phan static analyzer for PHP.
+  language: script
+  entry: .pre-commit.sh
+  files: '[^/]\.php$'
+  pass_filenames: false
