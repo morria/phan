@@ -18,6 +18,7 @@ use Phan\Analysis\PostOrderAnalysisVisitor;
 use Phan\Analysis\PropertyTypesAnalyzer;
 use Phan\AST\ASTReverter;
 use Phan\AST\UnionTypeVisitor;
+use Phan\CLI;
 use Phan\CodeBase;
 use Phan\Config;
 use Phan\Exception\CodeBaseException;
@@ -50,6 +51,7 @@ use Phan\Memoize;
 use Phan\Plugin\ConfigPluginSet;
 use Phan\Suggestion;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use RuntimeException;
 
@@ -60,6 +62,7 @@ use function count;
 use function in_array;
 use function is_int;
 use function is_string;
+use function sprintf;
 use function strtolower;
 
 /**
@@ -3418,7 +3421,12 @@ class Clazz extends AddressableElement
             if ($method->getFQSEN()->isAlternate()) {
                 return false;
             }
-            $reflection_method = $reflection_class->getMethod($method->getName());
+            try {
+                $reflection_method = $reflection_class->getMethod($method->getName());
+            } catch (ReflectionException $_) {
+                CLI::printWarningToStderr(sprintf("%s::%s does not exist\n", $reflection_class->getName(), $method->getName()));
+                return false;
+            }
             return $reflection_method->class === $reflection_class->name;
         });
         if (count($method_map) > 0) {

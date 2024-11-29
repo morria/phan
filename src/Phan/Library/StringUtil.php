@@ -36,6 +36,10 @@ class StringUtil
      */
     public static function varExportPretty($value): string
     {
+        if (\is_resource($value)) {
+            return \array_search($value, \get_defined_constants(), true) ?:
+                \sprintf('resource#%d(%s)', \get_resource_id($value), \get_resource_type($value));
+        }
         return \var_representation($value, \VAR_REPRESENTATION_SINGLE_LINE);
     }
 
