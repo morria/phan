@@ -1,4 +1,4 @@
-%s:5 PhanUnusedVariable Unused definition of variable $x
+%s:5 PhanUnusedVariableOverwrittenAllBranches Definition of variable $x is overwritten on all branches
 %s:10 PhanUnusedVariable Unused definition of variable $var
 %s:20 PhanUnusedVariable Unused definition of variable $x
 %s:22 PhanUnusedVariableCaughtException Unused definition of variable $e as a caught exception

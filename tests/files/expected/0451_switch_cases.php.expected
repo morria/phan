@@ -1,2 +1,2 @@
-%s:4 PhanUnusedVariable Unused definition of variable $x
+%s:4 PhanUnusedVariableOverwrittenAllBranches Definition of variable $x is overwritten on all branches
 %s:13 PhanTypeMismatchArgumentNullableInternal Argument 1 ($value) is $x of type ?array{} but \count() takes \Countable|\ResourceBundle|\SimpleXMLElement|array (expected type to be non-nullable)

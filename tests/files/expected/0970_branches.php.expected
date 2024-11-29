@@ -1,0 +1,6 @@
+%s:4 PhanUnusedVariable Unused definition of variable $var
+%s:8 PhanUnusedVariable Unused definition of variable $var
+%s:14 PhanUnusedVariableOverwrittenAllBranches Definition of variable $var is overwritten on all branches
+%s:24 PhanUnusedVariableOverwrittenAllBranches Definition of variable $var is overwritten on all branches
+%s:42 PhanUnusedVariableOverwrittenAllBranches Definition of variable $var is overwritten on all branches
+%s:48 PhanUnusedVariableOverwrittenAllBranches Definition of variable $var is overwritten on all branches

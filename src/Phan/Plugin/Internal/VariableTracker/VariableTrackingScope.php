@@ -39,7 +39,7 @@ class VariableTrackingScope
      * @var array<string,true>
      * Maps variable names to whether they were redefined in the scope.
      */
-    private $defs_shadowing_set = [];
+    public $defs_shadowing_set = [];
 
     /**
      * Record that $variable_name had a definition that was created by the Node $node

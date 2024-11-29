@@ -1,4 +1,4 @@
-%s:4 PhanUnusedVariable Unused definition of variable $val
+%s:4 PhanUnusedVariableOverwrittenAllBranches Definition of variable $val is overwritten on all branches
 %s:11 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($value) is $val of type false but \count() takes \Countable|\ResourceBundle|\SimpleXMLElement|array%S
-%s:13 PhanUnusedVariable Unused definition of variable $v2
+%s:13 PhanUnusedVariableOverwrittenAllBranches Definition of variable $v2 is overwritten on all branches
 %s:24 PhanTypeMismatchArgumentInternal Argument 1 ($value) is $v2 of type 2.3|\stdClass but \count() takes \Countable|\ResourceBundle|\SimpleXMLElement|array

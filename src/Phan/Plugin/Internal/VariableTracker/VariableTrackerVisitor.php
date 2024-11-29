@@ -187,6 +187,24 @@ final class VariableTrackerVisitor extends AnalysisVisitor
     }
 
     /**
+     * Tracks which variable definitions have been overwritten by every branch of a new scope
+     */
+    private static function registerDefsShadowedAcrossMultipleBranches(
+        VariableTrackingScope $prev_scope,
+        VariableTrackingScope $new_scope
+    ): void {
+        foreach ($new_scope->defs_shadowing_set as $variable_name => $_) {
+            $prev_defs = $prev_scope->getDefinition($variable_name) ?? [];
+            $new_defs = $new_scope->getDefinition($variable_name) ?? [];
+            // Which previous definitions cannot be accessed anymore?
+            $inaccessible_prev_defs = array_diff_key($prev_defs, $new_defs);
+            if ($inaccessible_prev_defs) {
+                self::$variable_graph->recordVariableOverwriteOnBranches($variable_name, $inaccessible_prev_defs);
+            }
+        }
+    }
+
+    /**
      * @param array{0:non-empty-list<string>,1:string} $check_infinite_recursion an array of 1 or more argument names to check for redefinition, and a name of the method
      */
     private function handleInfiniteRecursion(Node $node, array $check_infinite_recursion): void
@@ -928,7 +946,9 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         }
 
         // Merge inner scope into outer scope
-        return $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, []);
+        $new_scope = $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, []);
+        self::registerDefsShadowedAcrossMultipleBranches($outer_scope, $new_scope);
+        return $new_scope;
     }
 
     /**
@@ -992,7 +1012,9 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         }
 
         // Merge inner scope into outer scope
-        return $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, $inner_exiting_scope_list);
+        $new_scope = $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, $inner_exiting_scope_list);
+        self::registerDefsShadowedAcrossMultipleBranches($outer_scope, $new_scope);
+        return $new_scope;
     }
 
     /**
@@ -1021,7 +1043,9 @@ final class VariableTrackerVisitor extends AnalysisVisitor
             }
         }
         // Merge inner scope into outer scope
-        return $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, []);
+        $new_scope = $outer_scope->mergeBranchScopeList($inner_scope_list, $merge_parent_scope, []);
+        self::registerDefsShadowedAcrossMultipleBranches($outer_scope, $new_scope);
+        return $new_scope;
     }
 
     /**
@@ -1063,8 +1087,10 @@ final class VariableTrackerVisitor extends AnalysisVisitor
         }
         if ($catches_will_throw_or_return) {
             $combined_scope = $outer_scope->mergeBranchScopeList([$try_scope], false, []);
+            self::registerDefsShadowedAcrossMultipleBranches($outer_scope, $combined_scope);
             return $combined_scope;
         }
+        self::registerDefsShadowedAcrossMultipleBranches($outer_scope, $main_scope);
         return $main_scope;
     }
 

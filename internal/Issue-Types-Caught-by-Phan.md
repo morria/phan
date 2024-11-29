@@ -1694,6 +1694,7 @@ Unused definition of variable ${VARIABLE}
 
 e.g. [this issue](https://github.com/phan/phan/tree/v5/tests/misc/fallback_test/expected/037_assign_op.php.expected#L2) is emitted when analyzing [this PHP file](https://github.com/phan/phan/tree/v5/tests/misc/fallback_test/src/037_assign_op.php#L3).
 
+
 ## PhanUnusedVariableCaughtException
 
 ```
@@ -1709,6 +1710,27 @@ Unreferenced definition of variable ${VARIABLE} as a global variable
 ```
 
 e.g. [this issue](https://github.com/phan/phan/tree/v5/tests/files/expected/0676_unused_global.php.expected#L1) is emitted when analyzing [this PHP file](https://github.com/phan/phan/tree/v5/tests/files/src/0676_unused_global.php#L4).
+
+## PhanUnusedVariableOverwrittenAllBranches
+
+```
+Definition of variable ${VARIABLE} is overwritten on all branches
+```
+
+This issue will be emitted from the following code
+
+```php
+function test() {
+	$var = 'default'; //UnusedVariableOverwrittenAllBranches
+	if (rand(0,1)) {
+		$var = '1';
+	} else {
+		$var = '0';
+	}
+	return $var;
+}
+```
+
 
 ## PhanUnusedVariableReference
 

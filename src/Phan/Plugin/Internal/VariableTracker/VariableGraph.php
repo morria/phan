@@ -22,6 +22,13 @@ final class VariableGraph
     public $def_uses = [];
 
     /**
+     * @var array<string,array<int,true>>
+     *
+     * Maps variable name to (definition id to true). This tracks definitions that were overwritten in each of multiple branches.
+     */
+    public $def_overwritten_multiple_branches = [];
+
+    /**
      * @var array<string,associative-array<int,int>>
      *
      * Maps variable name to a map from definition id to line number of the node.
@@ -120,6 +127,17 @@ final class VariableGraph
     public function recordVariableModification(string $name): void
     {
         $this->const_expr_declarations[$name][-1] = 0;
+    }
+
+    /**
+     * Record that $name with previous definitions $def_ids has been overwritten across across all branches
+     * @param associative-array<mixed> $def_ids
+     */
+    public function recordVariableOverwriteOnBranches(string $name, array $def_ids): void
+    {
+        foreach ($def_ids as $def_id => $_) {
+            $this->def_overwritten_multiple_branches[$name][$def_id] = true;
+        }
     }
 
     /**

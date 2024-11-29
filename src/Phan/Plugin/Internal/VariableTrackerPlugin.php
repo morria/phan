@@ -443,6 +443,8 @@ final class VariableTrackerElementVisitor extends PluginAwarePostAnalysisVisitor
                     $issue_type = Issue::UnusedVariableValueOfForeachWithKey;
                 } elseif ($graph->isCaughtException($definition_id)) {
                     $issue_type = Issue::UnusedVariableCaughtException;
+                } elseif (isset($graph->def_overwritten_multiple_branches[$variable_name][$definition_id])) {
+                    $issue_type = Issue::UnusedVariableOverwrittenAllBranches;
                 }
                 Issue::maybeEmitWithParameters(
                     $this->code_base,

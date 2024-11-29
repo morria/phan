@@ -3,7 +3,7 @@ src/057_do_while_loop.php:15 PhanPluginPossiblyStaticClosure Closure() can be st
 src/057_do_while_loop.php:28 PhanPluginPossiblyStaticClosure Closure() can be static
 src/057_do_while_loop.php:31 PhanSideEffectFreeDoWhileBody Saw a do-while loop which probably has no side effects
 src/057_do_while_loop.php:39 PhanPluginPossiblyStaticClosure Closure() can be static
-src/057_do_while_loop.php:40 PhanUnusedVariable Unused definition of variable $a
+src/057_do_while_loop.php:40 PhanUnusedVariableOverwrittenAllBranches Definition of variable $a is overwritten on all branches
 src/057_do_while_loop.php:42 PhanSideEffectFreeDoWhileBody Saw a do-while loop which probably has no side effects
 src/057_do_while_loop.php:44 PhanUnusedVariable Unused definition of variable $a
 src/057_do_while_loop.php:52 PhanPluginPossiblyStaticClosure Closure() can be static

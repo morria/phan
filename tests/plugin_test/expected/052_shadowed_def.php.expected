@@ -6,5 +6,5 @@ src/052_shadowed_def.php:11 PhanPluginPossiblyStaticClosure Closure() can be sta
 src/052_shadowed_def.php:15 PhanPluginRedundantAssignment Assigning true to variable $a which already has that value
 src/052_shadowed_def.php:17 PhanPluginConstantVariableBool Variable $a is probably constant with a value of true
 src/052_shadowed_def.php:21 PhanPluginPossiblyStaticClosure Closure() can be static
-src/052_shadowed_def.php:22 PhanUnusedVariable Unused definition of variable $a
+src/052_shadowed_def.php:22 PhanUnusedVariableOverwrittenAllBranches Definition of variable $a is overwritten on all branches
 src/052_shadowed_def.php:25 PhanPluginRedundantAssignment Assigning true to variable $a which already has that value

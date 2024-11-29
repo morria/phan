@@ -1,5 +1,5 @@
 %s:7 PhanDebugAnnotation @phan-debug-var requested for variable $v - it has union type (empty union type)
-%s:7 PhanUnusedVariable Unused definition of variable $v
+%s:7 PhanUnusedVariableOverwrittenAllBranches Definition of variable $v is overwritten on all branches
 %s:10 PhanDebugAnnotation @phan-debug-var requested for variable $v - it has union type non-null-mixed(real=non-null-mixed)
 %s:10 PhanUnusedVariable Unused definition of variable $v
 %s:14 PhanDebugAnnotation @phan-debug-var requested for variable $v - it has union type array{}(real=array{})
