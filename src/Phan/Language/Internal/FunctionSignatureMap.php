@@ -12929,7 +12929,7 @@ return [
 'session_save_path' => ['string', 'path='=>'string'],
 'session_set_cookie_params' => ['bool', 'lifetime_or_options'=>'int', 'path='=>'string', 'domain='=>'?string', 'secure='=>'bool', 'httponly='=>'bool'],
 'session_set_cookie_params\'1' => ['bool', 'lifetime_or_options'=>'array{lifetime?:int,path?:string,domain?:?string,secure?:bool,httponly?:bool}'],
-'session_set_save_handler' => ['bool', 'open'=>'callable(string,string):bool', 'close'=>'callable():bool', 'read'=>'callable(string):string', 'write'=>'callable(string,string):bool', 'destroy'=>'callable(string):bool', 'gc'=>'callable(string):bool', 'create_sid='=>'callable():string', 'validate_sid='=>'callable(string):bool', 'update_timestamp='=>'callable(string):bool'],
+'session_set_save_handler' => ['bool', 'open'=>'callable(string,string):bool', 'close'=>'callable():bool', 'read'=>'callable(string):string', 'write'=>'callable(string,string):bool', 'destroy'=>'callable(string):bool', 'gc'=>'callable(int):bool', 'create_sid='=>'callable():string', 'validate_sid='=>'callable(string):bool', 'update_timestamp='=>'callable(string):bool'],
 'session_set_save_handler\'1' => ['bool', 'open'=>'SessionHandlerInterface', 'close='=>'bool'],
 'session_start' => ['bool', 'options='=>'array'],
 'session_status' => ['int'],
