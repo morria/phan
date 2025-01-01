@@ -1,0 +1,2 @@
+%s:7 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DefaultNullCheck $a = null) have been deprecated in PHP 8.4
+%s:14 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DefaultNullCheck $a = null) have been deprecated in PHP 8.4

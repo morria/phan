@@ -18,7 +18,7 @@ class ParseException extends Exception
     /** @var int the line number of the unparsable file where parsing failed. */
     private $line_number_start;
 
-    public function __construct(string $message, int $line_number_start, Throwable $previous = null)
+    public function __construct(string $message, int $line_number_start, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
         $this->line_number_start = $line_number_start;

@@ -277,7 +277,7 @@ class TolerantASTConverter
      * @param ?Cache<ParseResult> $cache
      * @throws InvalidArgumentException if the requested AST version is invalid.
      */
-    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], Cache $cache = null): \ast\Node
+    public function parseCodeAsPHPAST(string $file_contents, int $version, array &$errors = [], ?Cache $cache = null): \ast\Node
     {
         if (!\in_array($version, self::SUPPORTED_AST_VERSIONS, true)) {
             throw new \InvalidArgumentException(sprintf("Unexpected version: want %s, got %d", \implode(', ', self::SUPPORTED_AST_VERSIONS), $version));
@@ -3300,7 +3300,7 @@ class TolerantASTConverter
     /**
      * @param array<mixed,ast\Node|string|int|float|null> $children
      */
-    private static function newAstDecl(int $kind, int $flags, array $children, int $lineno, string $doc_comment = null, string $name = null, int $end_lineno = 0, int $decl_id = -1): ast\Node
+    private static function newAstDecl(int $kind, int $flags, array $children, int $lineno, ?string $doc_comment = null, ?string $name = null, int $end_lineno = 0, int $decl_id = -1): ast\Node
     {
         $decl_children = [];
         $decl_children['name'] = $name;

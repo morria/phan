@@ -1,3 +1,5 @@
+%s:10 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $orderBy = null) have been deprecated in PHP 8.4
+%s:18 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $orderBy = null) have been deprecated in PHP 8.4
 %s:21 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($string) is $orderBy of type array<string,string>|null (real type ?array) but \strlen() takes string
 %s:45 PhanTypeMismatchArgumentInternal%SReal Argument 1 ($string) is $x of type \stdClass[] (real type array) but \strlen() takes string
 %s:46 PhanTypeMismatchReturn Returning ['key'=>2] of type array{key:2} but acceptList() is declared to return array<int,\stdClass>

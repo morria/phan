@@ -21,7 +21,7 @@ class TextDocumentIdentifier
     /**
      * @param string|null $uri The text document's URI.
      */
-    public function __construct(string $uri = null)
+    public function __construct(?string $uri = null)
     {
         $this->uri = $uri;
     }

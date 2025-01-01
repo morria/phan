@@ -1,0 +1,1 @@
+%s:4 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\A $a = null) have been deprecated in PHP 8.4

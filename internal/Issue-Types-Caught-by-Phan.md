@@ -964,6 +964,14 @@ Call to deprecated function {FUNCTIONLIKE}{DETAILS}
 
 e.g. [this issue](https://github.com/phan/phan/tree/v5/tests/php72_files/expected/0008_each_deprecated.php.expected#L1) is emitted when analyzing [this PHP file](https://github.com/phan/phan/tree/v5/tests/php72_files/src/0008_each_deprecated.php#L3).
 
+## PhanDeprecatedImplicitNullableParam
+
+```
+Implicit nullable parameters ({TYPE} {PARAMETER} = null) have been deprecated in PHP 8.4
+```
+
+e.g. [this issue](https://github.com/phan/phan/tree/v5/tests/plugin_test/expected/049_redundant_null_coalescing.php.expected#L1) is emitted when analyzing [this PHP file](https://github.com/phan/phan/tree/v5/tests/plugin_test/src/049_redundant_null_coalescing.php#L3).
+
 ## PhanDeprecatedInterface
 
 ```

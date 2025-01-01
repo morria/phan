@@ -346,15 +346,32 @@ trait FunctionTrait
 
     /**
      * @return bool
-     * True if this method had no return type defined when it was defined,
-     * or if the method had a vague enough return type that Phan would add types to it
-     * (return type is inferred from the method signature itself and the docblock).
+     * True if any of the following are true:
+     * 1) This method had no return type defined when it was defined
+     * 2) The setting `allow_overriding_vague_return_types` is enabled and the method had a vague enough return
+     *      type that Phan would add types to it (return type is inferred from the method signature
+     *      itself and the docblock).
+     * 3) The setting `override_return_types` is enabled and the method has no hardcoded or dependent return type.
      */
     public function isReturnTypeModifiable(): bool
     {
         if ($this->isReturnTypeUndefined()) {
             return true;
         }
+
+        $has_hardcoded_return_type = (bool) ($this->getPhanFlags() & Flags::HARDCODED_RETURN_TYPE);
+
+        if (Config::getValue('override_return_types')) {
+            if ($has_hardcoded_return_type || $this->hasDependentReturnType()) {
+                // If the return type is hardcoded or we have a plugin that's inferring the return
+                // type based on method params, assume that those will do a better job of
+                // determining what the return type should actually be.
+                return false;
+            } else {
+                return true;
+            }
+        }
+
         if (!Config::getValue('allow_overriding_vague_return_types')) {
             return false;
         }
@@ -362,7 +379,7 @@ trait FunctionTrait
         if ($this instanceof Method && $this->isOverriddenByAnother()) {
             return false;
         }
-        if ($this->getPhanFlags() & Flags::HARDCODED_RETURN_TYPE) {
+        if ($has_hardcoded_return_type) {
             return false;
         }
         $return_type = $this->getUnionType();
@@ -1147,7 +1164,7 @@ trait FunctionTrait
      * @param list<Node|int|string|float> $args
      * @param ?Node $node - the node causing the call. This may be dynamic, e.g. call_user_func_array. This will be required in Phan 3.
      */
-    public function analyzeFunctionCall(CodeBase $code_base, Context $context, array $args, Node $node = null): void
+    public function analyzeFunctionCall(CodeBase $code_base, Context $context, array $args, ?Node $node = null): void
     {
         // @phan-suppress-next-line PhanTypePossiblyInvalidCallable, PhanTypeMismatchArgument - Callers should check hasFunctionCallAnalyzer
         ($this->function_call_analyzer_callback)($code_base, $context, $this, $args, $node);
@@ -1171,7 +1188,7 @@ trait FunctionTrait
      * Make additional analysis logic of this function/method use $closure in addition to any other closures.
      * @param ?PluginV3 $plugin @phan-mandatory-param
      */
-    public function addFunctionCallAnalyzer(Closure $closure, PluginV3 $plugin = null): void
+    public function addFunctionCallAnalyzer(Closure $closure, ?PluginV3 $plugin = null): void
     {
         $closure_id = spl_object_id($plugin ?? $closure);
         if (isset($this->function_call_analyzer_callback_set[$closure_id])) {
@@ -1660,7 +1677,7 @@ trait FunctionTrait
      *
      * @return ?Closure(list<Node|string|int|float|UnionType>, Context):UnionType
      */
-    public function getTemplateTypeExtractorClosure(CodeBase $code_base, TemplateType $template_type, int $skip_index = null): ?Closure
+    public function getTemplateTypeExtractorClosure(CodeBase $code_base, TemplateType $template_type, ?int $skip_index = null): ?Closure
     {
         $closure = null;
         foreach ($this->parameter_list as $i => $parameter) {

@@ -21,7 +21,7 @@ class InitializeResult
     /**
      * @param ?ServerCapabilities $capabilities
      */
-    public function __construct(ServerCapabilities $capabilities = null)
+    public function __construct(?ServerCapabilities $capabilities = null)
     {
         $this->capabilities = $capabilities ?? new ServerCapabilities();
     }

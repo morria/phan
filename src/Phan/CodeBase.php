@@ -495,7 +495,7 @@ class CodeBase
      * @param ?(string[]) $reanalyze_files files to re-analyze
      * @return list<string> - Subset of $new_file_list which changed on disk and has to be parsed again. Automatically unparses the old versions of files which were modified.
      */
-    public function updateFileList(array $new_file_list, array $file_mapping_contents = [], array $reanalyze_files = null): array
+    public function updateFileList(array $new_file_list, array $file_mapping_contents = [], ?array $reanalyze_files = null): array
     {
         if ($this->undo_tracker) {
             $this->invalidateDependentCacheEntries();

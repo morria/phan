@@ -91,7 +91,7 @@ class BlockAnalysisVisitor extends AnalysisVisitor
     public function __construct(
         CodeBase $code_base,
         Context $context,
-        Node $parent_node = null
+        ?Node $parent_node = null
     ) {
         parent::__construct($code_base, $context);
         if ($parent_node) {

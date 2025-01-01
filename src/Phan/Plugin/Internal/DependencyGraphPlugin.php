@@ -305,7 +305,7 @@ final class DependencyGraphPlugin extends PluginV3 implements
      * Process either the cached or generated graph
      * @param ?array<string,mixed> $cached_graph
      */
-    public function processGraph(array $cached_graph = null): void
+    public function processGraph(?array $cached_graph = null): void
     {
         $cmd  = $_ENV['PDEP_CMD'];
         $mode = $_ENV['PDEP_MODE'];
@@ -441,7 +441,7 @@ final class DependencyGraphPlugin extends PluginV3 implements
      * @param string $title
      * @param ?array<string,array<string,string>> $graph
      */
-    private function dumpFileDot(string $title, array $graph = null): void
+    private function dumpFileDot(string $title, ?array $graph = null): void
     {
         if (!$graph) {
             $graph = $this->fgraph;
@@ -482,7 +482,7 @@ final class DependencyGraphPlugin extends PluginV3 implements
      * @param string $title
      * @param ?array<string,array<string,string>> $graph
      */
-    private function dumpClassDot(string $title, array $graph = null): void
+    private function dumpClassDot(string $title, ?array $graph = null): void
     {
         if (!$graph) {
             $graph = $this->cgraph;

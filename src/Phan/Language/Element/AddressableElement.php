@@ -306,7 +306,7 @@ abstract class AddressableElement extends TypedElement implements AddressableEle
     /**
      * @param ?string $doc_comment the 'docComment' for this element, if any exists.
      */
-    public function setDocComment(string $doc_comment = null): void
+    public function setDocComment(?string $doc_comment = null): void
     {
         $this->doc_comment = $doc_comment;
     }

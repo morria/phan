@@ -51,7 +51,7 @@ final class ClosureType extends Type
      * Create an instance of Closure for the FQSEN of the passed in function/closure/method $func with FQSEN $fqsen
      * @suppress PhanAccessReadOnlyProperty this is acting on a clone
      */
-    public static function instanceWithClosureFQSEN(FQSEN $fqsen, FunctionInterface $func = null): ClosureType
+    public static function instanceWithClosureFQSEN(FQSEN $fqsen, ?FunctionInterface $func = null): ClosureType
     {
         static $original_instance = null;
         if ($original_instance === null) {

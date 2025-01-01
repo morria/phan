@@ -3,7 +3,7 @@
  * @param object $x
  * @param resource $r
  */
-function testIncDec($x, array $y, iterable $it, $r, stdClass $s = null) {
+function testIncDec($x, array $y, iterable $it, $r, ?stdClass $s = null) {
     ++$x;
     echo strlen($x);
     --$y;

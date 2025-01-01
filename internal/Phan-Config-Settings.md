@@ -207,7 +207,7 @@ defined.
 ## allow_overriding_vague_return_types
 
 Allow adding types to vague return types such as @return object, @return ?mixed in function/method/closure union types.
-Normally, Phan only adds inferred returned types when there is no `@return` type or real return type signature..
+Normally, Phan only adds inferred returned types when there is no `@return` type or real return type signature.
 This setting can be disabled on individual methods by adding `@phan-hardcode-return-type` to the doc comment.
 
 Disabled by default. This is more useful with `--analyze-twice`.
@@ -482,6 +482,18 @@ As long as this is kept relatively low, performance is usually not affected
 by changing this setting.
 
 (Default: `2`)
+
+## override_return_types
+
+Add types to all return types. Normally, Phan only adds inferred returned types when there is no `@return` type
+or real return type signature. This setting can be disabled on individual methods by adding
+`@phan-hardcode-return-type` to the doc comment.
+
+Disabled by default. This is more useful with `--analyze-twice` and in conjunction with `PhoundPlugin` to
+detect more callsite possibilities. See the [PR description](https://github.com/phan/phan/pull/4874) where
+this setting was added for more details.
+
+(Default: `false`)
 
 ## parent_constructor_required
 

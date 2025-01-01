@@ -429,7 +429,7 @@ class UnionType implements Serializable, Stringable
         string $type_string,
         Context $context,
         int $source,
-        CodeBase $code_base = null
+        ?CodeBase $code_base = null
     ): UnionType {
         if ($type_string === '') {
             // NOTE: '0' is a valid LiteralIntType

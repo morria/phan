@@ -250,6 +250,18 @@ class Parameter extends Variable
                     return;
                 }
             }
+            $real_type = $this->getNonVariadicUnionType()->getRealUnionType();
+            if (!$real_type->isEmpty() && !$real_type->containsNullable()) {
+                Issue::maybeEmit(
+                    $code_base,
+                    $context,
+                    Issue::DeprecatedImplicitNullableParam,
+                    $this->default_value->lineno ?? $context->getLineNumberStart(),
+                    $real_type,
+                    '$' . $this->getName()
+                );
+
+            }
             // If it isn't already nullable, convert the parameter type to nullable.
             $this->convertToNullable();
         }

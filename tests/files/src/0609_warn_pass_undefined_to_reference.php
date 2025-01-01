@@ -10,7 +10,7 @@ class TestPassByRef
     {
     }
 
-    public function testNullable(string &$test = null)
+    public function testNullable(?string &$test = null)
     {
     }
 

@@ -543,7 +543,7 @@ class Parser
         return "<?php\n?>" . $rest;
     }
 
-    private static function shouldUsePolyfill(string $file_path, Request $request = null): bool
+    private static function shouldUsePolyfill(string $file_path, ?Request $request = null): bool
     {
         if (Config::getValue('use_polyfill_parser')) {
             return true;
@@ -555,7 +555,7 @@ class Parser
     }
 
 
-    private static function createConverter(string $file_path, string $file_contents, Request $request = null): TolerantASTConverter
+    private static function createConverter(string $file_path, string $file_contents, ?Request $request = null): TolerantASTConverter
     {
         if ($request) {
             if ($request->shouldUseMappingPolyfill($file_path)) {

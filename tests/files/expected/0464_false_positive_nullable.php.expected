@@ -1,3 +1,7 @@
+%s:2 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $arr = null) have been deprecated in PHP 8.4
+%s:2 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $arr2 = null) have been deprecated in PHP 8.4
 %s:3 PhanTypeMismatchArgumentNullableInternal Argument 1 ($array) is $arr of type ?array but \array_values() takes array (expected type to be non-nullable)
+%s:13 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $arr = null) have been deprecated in PHP 8.4
+%s:13 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (array $arr2 = null) have been deprecated in PHP 8.4
 %s:17 PhanTypeArraySuspiciousNullable Suspicious array access to $arr2 of nullable type ?array
 %s:18 PhanTypeArraySuspiciousNullable Suspicious array access to $arr2 of nullable type ?array

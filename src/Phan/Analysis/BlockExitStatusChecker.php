@@ -82,7 +82,7 @@ final class BlockExitStatusChecker extends KindVisitorImplementation
      *
      * This currently does not handle goto or `break N` comprehensively.
      */
-    public function check(Node $node = null): int
+    public function check(?Node $node = null): int
     {
         if (!$node) {
             return self::STATUS_PROCEED;

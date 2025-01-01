@@ -1,4 +1,7 @@
+%s:6 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DateTime $a = null) have been deprecated in PHP 8.4
 %s:6 PhanParamReqAfterOpt Required parameter (int $b) follows optional (\DateTime|null $a = null)
+%s:8 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\DateTime $a = null) have been deprecated in PHP 8.4
+%s:8 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (int $c = null) have been deprecated in PHP 8.4
 %s:8 PhanParamReqAfterOpt Required parameter (\DateTime $d) follows optional (?int $c = null)
 %s:8 PhanParamReqAfterOpt Required parameter (\DateTime $f) follows optional (?mixed $e = null)
 %s:8 PhanParamReqAfterOpt Required parameter (int $b) follows optional (?\DateTime $a = null)

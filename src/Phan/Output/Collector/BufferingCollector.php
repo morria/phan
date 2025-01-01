@@ -27,7 +27,7 @@ final class BufferingCollector implements IssueCollectorInterface
      * BufferingCollector constructor.
      * @param ?IssueFilterInterface $filter
      */
-    public function __construct(IssueFilterInterface $filter = null)
+    public function __construct(?IssueFilterInterface $filter = null)
     {
         $this->filter = $filter ?? (new AnyFilter());
     }

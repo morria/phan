@@ -334,6 +334,7 @@ class Issue
     public const DeprecatedPartiallySupportedCallable = 'PhanDeprecatedPartiallySupportedCallable';
     public const DeprecatedPartiallySupportedCallableAlternateScope = 'PhanDeprecatedPartiallySupportedCallableAlternateScope';
     public const DeprecatedEncapsVar       = 'PhanDeprecatedEncapsVar';
+    public const DeprecatedImplicitNullableParam = 'PhanDeprecatedImplicitNullableParam';
 
     // Issue::CATEGORY_PARAMETER
     public const ParamReqAfterOpt          = 'PhanParamReqAfterOpt';
@@ -3237,6 +3238,14 @@ class Issue
                 self::REMEDIATION_B,
                 5011
             ),
+            new Issue(
+                self::DeprecatedImplicitNullableParam,
+                self::CATEGORY_DEPRECATED,
+                self::SEVERITY_NORMAL,
+                'Implicit nullable parameters ({TYPE} {PARAMETER} = null) have been deprecated in PHP 8.4',
+                self::REMEDIATION_B,
+                5012
+            ),
 
             // Issue::CATEGORY_PARAMETER
             new Issue(
@@ -5935,7 +5944,7 @@ class Issue
         string $file,
         int $line,
         array $template_parameters = [],
-        Suggestion $suggestion = null,
+        ?Suggestion $suggestion = null,
         int $column = 0
     ): IssueInstance {
         // TODO: Add callable to expanded union types instead
@@ -6019,7 +6028,7 @@ class Issue
         string $file,
         int $line,
         array $template_parameters,
-        Suggestion $suggestion = null,
+        ?Suggestion $suggestion = null,
         int $column = 0
     ): void {
         $issue = self::fromType($type);
@@ -6140,7 +6149,7 @@ class Issue
         string $issue_type,
         int $lineno,
         array $parameters,
-        Suggestion $suggestion = null,
+        ?Suggestion $suggestion = null,
         int $column = 0
     ): void {
         if (self::shouldSuppressIssue(
@@ -6173,7 +6182,7 @@ class Issue
         string $issue_type,
         int $lineno,
         array $parameters,
-        Suggestion $suggestion = null
+        ?Suggestion $suggestion = null
     ): bool {
         if (Config::getValue('disable_suppression')) {
             return false;

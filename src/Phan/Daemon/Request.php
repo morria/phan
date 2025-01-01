@@ -670,7 +670,7 @@ class Request
      * @param array<string,string> $file_mapping_contents maps relative paths to file contents
      * @param ?list<string> $file_names
      */
-    public static function reloadFilePathListForDaemon(CodeBase $code_base, Closure $file_path_lister, array $file_mapping_contents, array $file_names = null): void
+    public static function reloadFilePathListForDaemon(CodeBase $code_base, Closure $file_path_lister, array $file_mapping_contents, ?array $file_names = null): void
     {
         $old_count = $code_base->getParsedFilePathCount();
 

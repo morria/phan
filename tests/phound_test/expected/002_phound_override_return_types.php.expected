@@ -1,0 +1,8 @@
+\Cat::__construct|method|src/002_phound_override_return_types.php:20
+\Dog::__construct|method|src/002_phound_override_return_types.php:20
+\Cat::__construct|method|src/002_phound_override_return_types.php:28
+\PhoundOverrideReturnTypesTest::getAnimal|method|src/002_phound_override_return_types.php:33
+\Cat::shedFur|method|src/002_phound_override_return_types.php:34
+\Dog::shedFur|method|src/002_phound_override_return_types.php:34
+\PhoundOverrideReturnTypesTest::getAnimal2|method|src/002_phound_override_return_types.php:36
+\Cat::shedFur|method|src/002_phound_override_return_types.php:37

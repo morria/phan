@@ -1,5 +1,6 @@
 %s:5 PhanCompatibleConstructorPropertyPromotion Cannot use constructor property promotion before php 8.0 for private ?\MissingClass $other = null of \ConstructorPromotion21::__construct(int $value, ?\MissingClass $other = null)
 %s:5 PhanCompatibleConstructorPropertyPromotion Cannot use constructor property promotion before php 8.0 for public int $value of \ConstructorPromotion21::__construct(int $value, ?\MissingClass $other = null)
+%s:5 PhanDeprecatedImplicitNullableParam Implicit nullable parameters (\MissingClass $other = null) have been deprecated in PHP 8.4
 %s:5 PhanUndeclaredTypeParameter Parameter $other has undeclared type ?\MissingClass
 %s:5 PhanUndeclaredTypeProperty Property \ConstructorPromotion21->other has undeclared type ?\MissingClass
 %s:5 PhanWriteOnlyPrivateProperty Possibly zero read references to private property \ConstructorPromotion21->other

@@ -39,6 +39,7 @@ if type sqlite3 >/dev/null 2>/dev/null; then
     TEST_SUITES+=" __FakePhoundTest"
 fi
 TEST_SUITES+=" __FakeInferMissingTypesTest"
+TEST_SUITES+=" __FakeOverrideReturnTypesTest"
 TEST_SUITES+=" __FakeEmptyMethodsPluginTest"
 
 FAILURES=""

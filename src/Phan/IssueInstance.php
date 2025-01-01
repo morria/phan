@@ -58,7 +58,7 @@ class IssueInstance
         string $file,
         int $line,
         array $template_parameters,
-        Suggestion $suggestion = null,
+        ?Suggestion $suggestion = null,
         int $column = 0
     ) {
         $this->issue = $issue;

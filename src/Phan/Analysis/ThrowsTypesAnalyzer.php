@@ -66,7 +66,7 @@ class ThrowsTypesAnalyzer
         /**
          * @param list<int|string|Type> $args
          */
-        $maybe_emit_for_method = static function (string $issue_type, array $args, Suggestion $suggestion = null) use ($code_base, $method): void {
+        $maybe_emit_for_method = static function (string $issue_type, array $args, ?Suggestion $suggestion = null) use ($code_base, $method): void {
             Issue::maybeEmitWithParameters(
                 $code_base,
                 $method->getContext(),

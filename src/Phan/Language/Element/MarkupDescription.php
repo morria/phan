@@ -209,7 +209,7 @@ class MarkupDescription
      */
     public static function extractDescriptionFromDocComment(
         AddressableElementInterface $element,
-        CodeBase $code_base = null
+        ?CodeBase $code_base = null
     ): ?string {
         $extracted_doc_comment = self::extractDescriptionFromDocCommentRaw($element);
         if (StringUtil::isNonZeroLengthString($extracted_doc_comment)) {
@@ -370,7 +370,7 @@ class MarkupDescription
      * @return string markup string
      * @internal
      */
-    public static function extractDocComment(string $doc_comment, int $comment_category = null, UnionType $element_type = null, bool $remove_type = false): string
+    public static function extractDocComment(string $doc_comment, ?int $comment_category = null, ?UnionType $element_type = null, bool $remove_type = false): string
     {
         // Trim the start and the end of the doc comment.
         //

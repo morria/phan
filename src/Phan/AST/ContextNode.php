@@ -574,7 +574,7 @@ class ContextNode
     public function getClassList(
         bool $ignore_missing_classes = false,
         int $expected_type_categories = self::CLASS_LIST_ACCEPT_ANY,
-        string $custom_issue_type = null,
+        ?string $custom_issue_type = null,
         bool $warn_if_wrong_type = true
     ): array {
         [$union_type, $class_list] = $this->getClassListInner($ignore_missing_classes);
@@ -1140,7 +1140,7 @@ class ContextNode
     private function returnStubOrThrowUndeclaredFunctionIssueException(
         FullyQualifiedFunctionName $function_fqsen,
         bool $suggest_in_global_namespace,
-        FullyQualifiedFunctionName $namespaced_function_fqsen = null,
+        ?FullyQualifiedFunctionName $namespaced_function_fqsen = null,
         bool $return_placeholder_for_undefined = false
     ): Func {
         if ($return_placeholder_for_undefined) {

@@ -52,7 +52,7 @@ final class CompletionRequest extends NodeInfoRequest
     public function __construct(
         string $uri,
         Position $position,
-        CompletionContext $completion_context = null
+        ?CompletionContext $completion_context = null
     ) {
         parent::__construct($uri, $position);
     }
@@ -83,7 +83,7 @@ final class CompletionRequest extends NodeInfoRequest
     public function recordCompletionElement(
         CodeBase $code_base,
         TypedElementInterface $element,
-        string $prefix = null
+        ?string $prefix = null
     ): void {
         $item = self::createCompletionItem($code_base, $element, $prefix);
         $this->recordCompletionItem($item);

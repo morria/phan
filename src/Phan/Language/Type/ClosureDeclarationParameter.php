@@ -31,7 +31,7 @@ final class ClosureDeclarationParameter
     /** @var bool is this parameter optional? */
     private $is_optional;
 
-    public function __construct(UnionType $type, bool $is_variadic, bool $is_reference, bool $is_optional, string $name = null)
+    public function __construct(UnionType $type, bool $is_variadic, bool $is_reference, bool $is_optional, ?string $name = null)
     {
         $this->type = $type;
         $this->name = $name;

@@ -65,7 +65,7 @@ class Diagnostic
      * @suppress PhanPossiblyNullTypeMismatchProperty
      * @suppress PhanTypeMismatchDeclaredParamNullable
      */
-    public function __construct(string $message = null, Range $range = null, int $code = null, int $severity = null, string $source = null)
+    public function __construct(?string $message = null, ?Range $range = null, ?int $code = null, ?int $severity = null, ?string $source = null)
     {
         $this->message = $message;
         $this->range = $range;
